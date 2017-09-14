@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.utils import timezone
 from enum import Enum
+import time
 
 
 class Account(models.Model):
@@ -26,6 +27,17 @@ class FeedingLog(models.Model):
 	class Meta:
 		managed = True
 		db_table = 'feeding_logs'
+
+	def __str__(self):
+		return 'id: %s, feeding uuid: %s,  card: %s,  open time: %s, close time: %s, start weight: %s, end weight: %s, synced: %d ' % \
+			   (self.box_id,
+				self.feeding_id,
+				self.card_id,
+				time.asctime(time.localtime(int(self.open_time))),
+				time.asctime(time.localtime(int(self.close_time))),
+				self.start_weight,
+				self.end_weight,
+				self.synced)
 
 
 class FoodBox(models.Model):
