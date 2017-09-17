@@ -10,8 +10,10 @@ class BboxConfig(AppConfig):
 		from zeroconf import Zeroconf
 		ip = socket.inet_aton(socket.gethostbyname(socket.gethostname()))
 		port = 9998  # TODO - Port number?
-		info = ServiceInfo(_type="_http._tcp.local.", name="FatCat_BrainBox", address=ip, port=port, properties=None,
-			server=None)
+		info = ServiceInfo(
+			type_="_FatCatBB._tcp.local.", name="_FatCatBB._tcp.local.", address=ip, port=port, properties={},
+			server=None
+		)
 		zeroconf = Zeroconf()
 		# TODO - Log this to systemlog
 		zeroconf.register_service(info)
