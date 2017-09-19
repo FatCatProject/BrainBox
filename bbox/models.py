@@ -56,6 +56,15 @@ class FoodBox(models.Model):
 		managed = True
 		db_table = 'food_boxes'
 
+	def __str__(self):
+		return 'rowid: %d, box_id: %s,  box_ip: %s,  box_name: %s, box_last_sync: %s \n' % \
+			   (self.id,
+				self.box_id,
+				self.box_ip,
+				self.box_name,
+				time.asctime(time.localtime(int(self.box_last_sync))),)
+
+
 
 class SystemLog(models.Model):
 	time_stamp = models.TextField()  # This field type is a guess.

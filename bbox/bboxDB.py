@@ -121,13 +121,13 @@ class BrainBoxDB:
 
 	def add_feeding_log(self, myLog: FeedingLog):
 		"""
-		//TODO  fix box_id
+		//TODO fix box_id
 		Getting a feeding_log as an object and Adding it to the DB
 		"""
 		self.c.execute(
 			'INSERT INTO feeding_logs (box_id, feeding_id, card_id, open_time, close_time, start_weight, end_weight, synced)'
 			' VALUES (?, ?, ?, ?, ?, ?, ?, ?);', (
-				"x", myLog.feeding_id, myLog.card_id, myLog.open_time,
+				"X", myLog.feeding_id, myLog.card_id, myLog.open_time,
 				myLog.close_time, myLog.start_weight, myLog.end_weight,
 				myLog.synced))
 		self.conn.commit()
@@ -282,3 +282,29 @@ class BrainBoxDB:
 ### END of Account functions ###
 
 #//Todo FoodBox functions
+	### Start of FoodBox functions ###
+	def get_all_foodBoxes(self):
+		"""
+		Returns a tuple of all food_boxes
+		"""
+		self.c.execute('SELECT * FROM food_boxes')
+		boxData = self.c.fetchall()
+		boxes = []
+		for row in boxData:
+			myBox = FoodBox()
+			myBox.id = row[0]  # rowid
+			myBox.box_id = row[1]
+			myBox.box_ip =row[2]
+			myBox.box_name =row[3]
+			myBox.box_last_sync =row[4]
+			boxes.append(myBox)
+		return tuple(boxes)
+
+	def delete_foodBox(self, foodBox:FoodBox):
+		"""
+		Delete a foodbox from the table
+		"""
+		self.c.execute('DELETE FROM food_boxes WHERE box_id = ?', (foodBox.box_id,))
+		self.conn.commit()
+
+		### END of FoodBox functions ###

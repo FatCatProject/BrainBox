@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpRequest
 
-from .models import FeedingLog, Account, SystemLog, MessageTypes, SystemSettings, SystemSetting
+from .models import FeedingLog, Account, SystemLog, MessageTypes, SystemSettings, SystemSetting, FoodBox
 from bbox.bboxDB import BrainBoxDB
 
 
@@ -106,11 +106,21 @@ def change_user_name_and_or_password(request, acc, user_name, password):
 	return HttpResponse(mylog)
 
 
+def get_all_foodBoxes(request):
+	db = BrainBoxDB()
+	mylogs = db.get_all_foodBoxes()
+	return HttpResponse(mylogs)
+
+def delete_foodBox(request, myBox):
+	db = BrainBoxDB()
+	mylogs = db.delete_foodBox(myBox)
+	return HttpResponse(mylogs)
+
 
 
 def test(request: HttpRequest):
 	myfunc = request.GET.get("func")
-
+	db = BrainBoxDB()
 	if myfunc == "allFeedingLogs":
 		return allFeedingLogs(request)
 
@@ -180,11 +190,25 @@ def test(request: HttpRequest):
 		return add_account(request, acc)
 
 	if myfunc == "change_user_name_and_or_password":
-		user_name = 'Kot'
+		user_name = 'gggg'
 		password = None
 		acc = Account()
-		acc.user_name ='Kotya'
-		acc.password  = 'Kotya'
+		acc.user_name ='BBB'
+		acc.password  = 'kotya'
 		acc.id = 2
-		return change_user_name_and_or_password(request, acc, user_name, password)
+		db.change_user_name_and_or_password(acc, user_name)
+		return HttpResponse("Changed")
+
+	if myfunc == "get_all_foodBoxes":
+		return get_all_foodBoxes(request)
+
+	if myfunc == "delete_foodBox":
+		myBox = FoodBox()
+		myBox.id = 2  # rowid
+		myBox.box_id = '444'
+		myBox.box_ip = '127.1.1.1'
+		myBox.box_name = 'Cat2'
+		myBox.box_last_sync = '1505655385'
+		return delete_foodBox(request,myBox)
+
 	return HttpResponse("Blank")
