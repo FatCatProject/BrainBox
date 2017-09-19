@@ -116,6 +116,10 @@ def delete_foodBox(request, myBox):
 	mylogs = db.delete_foodBox(myBox)
 	return HttpResponse(mylogs)
 
+def get_foodBox_by_foodBox_id(request, id):
+	db = BrainBoxDB()
+	mylog = db.get_foodBox_by_foodBox_id(id)
+	return HttpResponse(mylog)
 
 
 def test(request: HttpRequest):
@@ -210,5 +214,8 @@ def test(request: HttpRequest):
 		myBox.box_name = 'Cat2'
 		myBox.box_last_sync = '1505655385'
 		return delete_foodBox(request,myBox)
+
+	if myfunc == "get_foodBox_by_foodBox_id":
+		return get_foodBox_by_foodBox_id(request, id='333')
 
 	return HttpResponse("Blank")

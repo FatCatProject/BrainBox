@@ -307,4 +307,19 @@ class BrainBoxDB:
 		self.c.execute('DELETE FROM food_boxes WHERE box_id = ?', (foodBox.box_id,))
 		self.conn.commit()
 
+	def get_foodBox_by_foodBox_id(self, boxId: str):
+		"""
+		Returns a specific foodbox by ID
+		"""
+		self.c.execute('SELECT * FROM food_boxes WHERE box_id = ?', (boxId,))
+		boxData = self.c.fetchone()
+		if len(boxData) == 0:
+			return None
+		myBox = FoodBox()
+		myBox.id = boxData[0]  # rowid
+		myBox.box_id = boxData[1]
+		myBox.box_ip = boxData[2]
+		myBox.box_name = boxData[3]
+		myBox.box_last_sync = boxData[4]
+		return myBox
 		### END of FoodBox functions ###
