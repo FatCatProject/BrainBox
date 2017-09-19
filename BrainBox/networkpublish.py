@@ -5,7 +5,10 @@ from zeroconf import Zeroconf
 
 class NetworkPublish:
 	def __init__(self, name="FatCatBB", port=9998):
-		ip = socket.inet_aton(socket.gethostbyname(socket.gethostname()))
+		s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		s.connect(("8.8.8.8", 80))
+		ip = socket.inet_aton(socket.gethostbyname(s.getsockname()[0]))
+		s.close()
 
 		self.info = ServiceInfo(
 			type_="_{}._tcp.local.".format(name), name="_{}._tcp.local.".format(name), address=ip, port=port,
