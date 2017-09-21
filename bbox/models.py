@@ -1,109 +1,92 @@
 from django.db import models
-import datetime
-from django.utils import timezone
-from enum import Enum
-import time
 
 
 class Account(models.Model):
-	user_name = models.TextField(unique=True)
-	password = models.TextField()
+	user_name = models.TextField(primary_key=True, max_length=20, db_column="user_name")
+	password = models.TextField(blank=False, max_length=50, db_column="password")  # TODO - Secure this
 
 	class Meta:
 		managed = True
-		db_table = 'account'
+		db_table = 'accounts'
 
 	def __str__(self):
-		return 'rowid: %d, user_name: %s,  password: %s \n' % \
-			   (self.id,
-				self.user_name,
-				self.password)
-
-class FeedingLog(models.Model):
-	box_id = models.TextField()
-	feeding_id = models.TextField(unique=True)
-	card_id = models.TextField()
-	open_time = models.TextField()  # This field type is a guess.
-	close_time = models.TextField()  # This field type is a guess.
-	start_weight = models.TextField()  # This field type is a guess.
-	end_weight = models.TextField()  # This field type is a guess.
-	synced = models.IntegerField()
-
-	class Meta:
-		managed = True
-		db_table = 'feeding_logs'
-
-	def __str__(self):
-		return 'rowid: %d ,box_id: %s, feeding uuid: %s,  card: %s,  open time: %s, close time: %s, start weight: %s, end weight: %s, synced: %d \n' % \
-			   (self.id,
-				self.box_id,
-				self.feeding_id,
-				self.card_id,
-				time.asctime(time.localtime(int(self.open_time))),
-				time.asctime(time.localtime(int(self.close_time))),
-				self.start_weight,
-				self.end_weight,
-				self.synced)
+		return "user_name: {0}, password: {1}".format(self.user_name, self.password)
 
 
 class FoodBox(models.Model):
-	box_id = models.TextField(unique=True)
-	box_ip = models.TextField()
-	box_name = models.TextField()
-	box_last_sync = models.TextField()
+	box_id = models.TextField(primary_key=True, db_column="box_id")
+	box_ip = models.TextField(blank=False, db_column="box_ip")
+	box_name = models.TextField(blank=False, db_column="box_name")
+	box_last_sync = models.DateTimeField(blank=False, db_column="box_last_synced")
 
 	class Meta:
 		managed = True
 		db_table = 'food_boxes'
 
 	def __str__(self):
-		return 'rowid: %d, box_id: %s,  box_ip: %s,  box_name: %s, box_last_sync: %s \n' % \
-			   (self.id,
-				self.box_id,
-				self.box_ip,
-				self.box_name,
-				time.asctime(time.localtime(int(self.box_last_sync))),)
+		return "rowid: {0}, box_id: {1}, box_ip: {2}, box_name: {3}, box_last_sync: {4}".format(
+			self.id, self.box_id, self.box_ip, self.box_name, self.box_last_sync
+		)
 
+
+class FeedingLog(models.Model):
+	id = models.AutoField(primary_key=True, db_column="rowid")
+	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
+	feeding_id = models.TextField(blank=False, db_column="feeding_id")
+	card_id = models.TextField(blank=False, db_column="card_id")
+	open_time = models.DateTimeField(blank=False, db_column="open_time")
+	close_time = models.DateTimeField(blank=False, db_column="close_time")
+	start_weight = models.FloatField(blank=False, db_column="start_weight")
+	end_weight = models.FloatField(blank=False, db_column="end_weight")
+	synced = models.BooleanField(blank=False, default=False, db_column="synced")
+
+	class Meta:
+		managed = True
+		db_table = 'feeding_logs'
+		unique_together = (("box_id", "feeding_id"),)
+
+	def __str__(self):
+		return \
+			"rowid: {0} ,box_id: {1}, feeding uuid: {2},  card: {3},  open time: {4}, close time: {5}, " \
+			"start weight: {6}, end weight: {7}, synced: {8}".format(
+				self.id, self.box_id, self.feeding_id, self.card_id, self.open_time, self.close_time, self.start_weight,
+				self.end_weight, self.synced
+			)
 
 
 class SystemLog(models.Model):
-	time_stamp = models.TextField()  # This field type is a guess.
+	id = models.AutoField(primary_key=True, db_column="rowid")
+	time_stamp = models.DateTimeField(blank=False, db_column="time_stamp")
 	message = models.TextField(blank=True, null=True)
-	message_type = models.TextField()
-	severity = models.IntegerField()
+	message_type = models.TextField(
+		choices=(("Information", "Information"), ("Error", "Error"), ("Fatal", "Fatal"),), blank=False,
+		db_column="message_type"
+	)
+	severity = models.IntegerField(blank=False, db_column="severity")
 
 	class Meta:
 		managed = True
 		db_table = 'system_logs'
 
 	def __str__(self):
-		return 'rowid: %d, time_stamp: %s,  message: %s,  message_type: %s, severity: %d \n' % \
-			   (self.id,
-				time.asctime(time.localtime(int(self.time_stamp))),
-				self.message,
-				self.message_type,
-				self.severity)
+		return "rowid: {0}, time_stamp: {1}, message: {2}, message_type: {3}, severity: {4}".format(
+			self.id, self.time_stamp, self.message, self.message_type, self.severity
+		)
+
 
 class SystemSettings(models.Model):
-	key_name = models.TextField(unique=True)
-	value_text = models.TextField(blank=True, null=True)
+	key_name = models.TextField(
+		primary_key=True, choices=(
+			("BrainBox_ID", "BrainBox_ID"), ("BrainBox_Name", "BrainBox_Name"), ("Sync_Interval", "Sync_interval"),
+		), db_column="key_name"
+	)
+	value_text = models.TextField(blank=True, null=True, db_column="value_text")
 
 	class Meta:
 		managed = True
 		db_table = 'system_settings'
 
 	def __str__(self):
-		return 'rowid: %d, key_name: %s,  value_text: %s \n' % \
-			   (self.id,
-				self.key_name,
-				self.value_text)
-
-class MessageTypes(Enum):
-	Information = 1  # General information
-	Error = 2  # Something bad happened but operation can continue
-	Fatal = 3  # Something bad happened and program has to stop
-
-class SystemSetting(Enum):
-	BrainBox_ID = 1  # ID of the BrainBox
-	BrainBox_Name = 2  # Name of BrainBox
-	Sync_Interval = 3  # Interval between pooling Server
+		return "rowid: {0}, key_name: {1}, value_text: {2}".format(
+			self.id, self.key_name, self.value_text
+		)

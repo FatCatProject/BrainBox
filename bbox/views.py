@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpRequest
 
-from .models import FeedingLog, Account, SystemLog, MessageTypes, SystemSettings, SystemSetting, FoodBox
+from .models import FeedingLog, Account, SystemLog, SystemSettings, FoodBox
+
 from bbox.bboxDB import BrainBoxDB
 
 
@@ -171,16 +172,16 @@ def test(request: HttpRequest):
 		myLog = SystemLog()
 		myLog.time_stamp = '1503402679'
 		myLog.message = 'added msg 2'
-		myLog.message_type = MessageTypes.Error
+		myLog.message_type = "Error"
 		myLog.severity = 1
 		return add_system_log(request, myLog)
 
 	if myfunc == "get_system_setting":
-		setting = SystemSetting.BrainBox_Name
+		setting = "BrainBox_Name"
 		return get_system_setting(request, setting)
 
 	if myfunc == "set_system_setting":
-		setting = SystemSetting.BrainBox_ID
+		setting = "BrainBox_ID"
 		val = 111
 		return set_system_setting(request, setting, val)
 
