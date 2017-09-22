@@ -2,7 +2,7 @@ import os.path
 import sqlite3
 import time
 
-from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSettings, MessageTypes, SystemSetting
+from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting
 
 
 class BrainBoxDB:
@@ -152,7 +152,7 @@ class BrainBoxDB:
 		ret_log.id = data[0]
 		ret_log.time_stamp = int(data[1])  # type: int  # type: int
 		ret_log.message = data[2]  # type: str
-		ret_log.message_type = MessageTypes[data[3]]  # type: MessageTypes
+		ret_log.message_type = data[3]  # type: str
 		ret_log.severity = data[4]  # type: int
 		return ret_log
 
@@ -177,7 +177,7 @@ class BrainBoxDB:
 			myLog.id = data[0]
 			myLog.time_stamp = int(data[1])  # type: int  # type: int
 			myLog.message = data[2]  # type: str
-			myLog.message_type = MessageTypes[data[3]]  # type: MessageTypes
+			myLog.message_type = data[3]  # type: str
 			myLog.severity = data[4]  # type: int
 			log_list.append(myLog)
 		return tuple(log_list)
@@ -203,7 +203,7 @@ class BrainBoxDB:
 	### End of system_logs functions ###
 
 	### Start of system_settings functiones ###
-	def get_system_setting(self, setting: SystemSetting):
+	def get_system_setting(self, setting: str):
 		"""Function returns a value of a specific setting from enums that are available:
 			the input must be "SystemSettings.key_name"
 			key names: BrainBox_ID / BrainBox_Name / Sync_Interval
@@ -218,7 +218,7 @@ class BrainBoxDB:
 				if row[1] == setting.name:
 					return row[2]
 
-	def set_system_setting(self, setting: SystemSetting, value: str):
+	def set_system_setting(self, setting: str, value: str):
 		"""
 		Function sets a value to a key in "system_settings" table
 		If the key doesn't exist yet , it will write a new row with the key and value
