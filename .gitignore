@@ -105,3 +105,6 @@ ENV/
 
 # DB file
 *.sqlite3
+
+# Migrations
+migrations/
