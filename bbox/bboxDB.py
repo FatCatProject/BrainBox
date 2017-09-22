@@ -2,7 +2,7 @@ import os.path
 import sqlite3
 import time
 
-from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSettings
+from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting
 
 
 class BrainBoxDB:

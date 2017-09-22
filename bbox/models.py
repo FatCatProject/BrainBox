@@ -24,13 +24,13 @@ class FoodBox(models.Model):
 		db_table = 'food_boxes'
 
 	def __str__(self):
-		return "rowid: {0}, box_id: {1}, box_ip: {2}, box_name: {3}, box_last_sync: {4}".format(
-			self.id, self.box_id, self.box_ip, self.box_name, self.box_last_sync
+		return "box_id: {0}, box_ip: {1}, box_name: {2}, box_last_sync: {3}".format(
+			self.box_id, self.box_ip, self.box_name, self.box_last_sync
 		)
 
 
 class FeedingLog(models.Model):
-	id = models.AutoField(primary_key=True, db_column="rowid")
+	rowid = models.AutoField(primary_key=True, db_column="rowid")
 	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
 	feeding_id = models.TextField(blank=False, db_column="feeding_id")
 	card_id = models.TextField(blank=False, db_column="card_id")
@@ -49,13 +49,14 @@ class FeedingLog(models.Model):
 		return \
 			"rowid: {0} ,box_id: {1}, feeding uuid: {2},  card: {3},  open time: {4}, close time: {5}, " \
 			"start weight: {6}, end weight: {7}, synced: {8}".format(
-				self.id, self.box_id, self.feeding_id, self.card_id, self.open_time, self.close_time, self.start_weight,
+				self.rowid, self.box_id, self.feeding_id, self.card_id, self.open_time, self.close_time,
+				self.start_weight,
 				self.end_weight, self.synced
 			)
 
 
 class SystemLog(models.Model):
-	id = models.AutoField(primary_key=True, db_column="rowid")
+	rowid = models.AutoField(primary_key=True, db_column="rowid")
 	time_stamp = models.DateTimeField(blank=False, db_column="time_stamp")
 	message = models.TextField(blank=True, null=True)
 	message_type = models.TextField(
@@ -70,11 +71,11 @@ class SystemLog(models.Model):
 
 	def __str__(self):
 		return "rowid: {0}, time_stamp: {1}, message: {2}, message_type: {3}, severity: {4}".format(
-			self.id, self.time_stamp, self.message, self.message_type, self.severity
+			self.rowid, self.time_stamp, self.message, self.message_type, self.severity
 		)
 
 
-class SystemSettings(models.Model):
+class SystemSetting(models.Model):
 	key_name = models.TextField(
 		primary_key=True, choices=(
 			("BrainBox_ID", "BrainBox_ID"), ("BrainBox_Name", "BrainBox_Name"), ("Sync_Interval", "Sync_interval"),
@@ -87,6 +88,6 @@ class SystemSettings(models.Model):
 		db_table = 'system_settings'
 
 	def __str__(self):
-		return "rowid: {0}, key_name: {1}, value_text: {2}".format(
-			self.id, self.key_name, self.value_text
+		return "key_name: {0}, value_text: {1}".format(
+			self.key_name, self.value_text
 		)

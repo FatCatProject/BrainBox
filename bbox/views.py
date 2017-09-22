@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import HttpRequest
 
-from .models import FeedingLog, Account, SystemLog, SystemSettings, FoodBox
+from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox
 
 from bbox.bboxDB import BrainBoxDB
 
