@@ -24,7 +24,7 @@ class FoodBox(models.Model):
 		db_table = 'food_boxes'
 
 	def __str__(self):
-		return "box_id: {0}, box_ip: {1}, box_name: {2}, box_last_sync: {3}".format(
+		return "box_id: {0}, box_ip: {1}, box_name: {2}, box_last_sync: {3} \n".format(
 			self.box_id, self.box_ip, self.box_name, self.box_last_sync
 		)
 
@@ -43,12 +43,12 @@ class FeedingLog(models.Model):
 	class Meta:
 		managed = True
 		db_table = 'feeding_logs'
-		unique_together = (("box_id", "feeding_id"),)
+		unique_together = ("box_id", "feeding_id")
 
 	def __str__(self):
 		return \
 			"rowid: {0} ,box_id: {1}, feeding uuid: {2},  card: {3},  open time: {4}, close time: {5}, " \
-			"start weight: {6}, end weight: {7}, synced: {8}".format(
+			"start weight: {6}, end weight: {7}, synced: {8} \n".format(
 				self.rowid, self.box_id, self.feeding_id, self.card_id, self.open_time, self.close_time,
 				self.start_weight,
 				self.end_weight, self.synced
@@ -70,7 +70,7 @@ class SystemLog(models.Model):
 		db_table = 'system_logs'
 
 	def __str__(self):
-		return "rowid: {0}, time_stamp: {1}, message: {2}, message_type: {3}, severity: {4}".format(
+		return "rowid: {0}, time_stamp: {1}, message: {2}, message_type: {3}, severity: {4} \n".format(
 			self.rowid, self.time_stamp, self.message, self.message_type, self.severity
 		)
 
@@ -88,6 +88,6 @@ class SystemSetting(models.Model):
 		db_table = 'system_settings'
 
 	def __str__(self):
-		return "key_name: {0}, value_text: {1}".format(
+		return "key_name: {0}, value_text: {1} \n".format(
 			self.key_name, self.value_text
 		)
