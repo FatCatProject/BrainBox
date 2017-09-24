@@ -1,6 +1,7 @@
-from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting
+from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting, Card, CardOpen
 import time
 import datetime
+from itertools import chain
 
 class BrainBoxDB:
 	### Start feeding_logs functiones ###
@@ -191,4 +192,38 @@ class BrainBoxDB:
 		return FoodBox.objects.filter(box_id=boxId).first()
 
 	### END of FoodBox functions ###
-	### Start of FoodBox functions ###
+	### Start of Cards functions ###
+
+	@staticmethod
+	def get_all_cards():
+		return tuple(Card.objects.all())
+
+	@staticmethod
+	def get_cards(admin=False):
+		# if admin=false return all NON admin cards
+		# if admin=true return all admin cards
+		return tuple(Card.objects.filter(admin=admin))
+
+	@staticmethod
+	def get_boxes_for_card(card_id: str):
+		#returns tupple of foodBoxes
+		queryset = CardOpen.objects.filter(card_id=card_id)
+		boxes_ids = [entry.box_id for entry in queryset]
+		return tuple(boxes_ids)
+
+	def get_cards_for_box(box_id: str):
+		#returns tupple of cards that are Active
+		queryset = CardOpen.objects.filter(box_id=box_id,active=True)
+		cards = [entry.card_id for entry in queryset]
+		return tuple(cards)
+
+	def set_card_name(card_id: str , new_name: str):
+		Card.objects.filter(card_id=card_id).update(card_name=new_name)
+
+	def get_card_by_name(card_name: str):
+		return Card.objects.filter(card_name=card_name)
+
+	def add_card(card_id:str, card_name:str = None, isAdmin:bool = False):
+		Card.objects.create(card_id=card_id,card_name=card_name,admin=isAdmin)
+	### END of Cards functions ###
+

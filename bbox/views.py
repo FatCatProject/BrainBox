@@ -116,6 +116,36 @@ def get_foodBox_by_foodBox_id(request, id):
 	mylog = BrainBoxDB.get_foodBox_by_foodBox_id(id)
 	return HttpResponse(mylog)
 
+def get_all_cards(request):
+	cards = BrainBoxDB.get_all_cards()
+	return HttpResponse(cards)
+
+def get_cards(request,isadmin):
+	cards = BrainBoxDB.get_cards(isadmin)
+	return HttpResponse(cards)
+
+def get_boxes_for_card(request,cardID):
+	boxes = BrainBoxDB.get_boxes_for_card(cardID)
+	return HttpResponse(boxes)
+
+def get_cards_for_box(request,boxID):
+	boxes = BrainBoxDB.get_cards_for_box(boxID)
+	return HttpResponse(boxes)
+
+def set_card_name(request, id, newName):
+	card = BrainBoxDB.set_card_name(id, newName)
+	return HttpResponse(card)
+
+def get_card_by_name(request, name):
+	card = BrainBoxDB.get_card_by_name(name)
+	return HttpResponse(card)
+
+def add_card(request, card_id, card_name):
+	card = BrainBoxDB.add_card(card_id, card_name)
+	return HttpResponse(card)
+
+
+
 
 def test(request: HttpRequest):
 	myfunc = request.GET.get("func")
@@ -205,5 +235,33 @@ def test(request: HttpRequest):
 
 	if myfunc == "get_foodBox_by_foodBox_id":
 		return get_foodBox_by_foodBox_id(request, id='1')
+
+	if myfunc == "get_all_cards":
+		return get_all_cards(request)
+
+	if myfunc == "get_cards":
+		isAdmin = False
+		return get_cards(request, isAdmin)
+
+	if myfunc == "get_boxes_for_card":
+		card = '146-041-165-049-000'
+		return get_boxes_for_card(request,card)
+
+	if myfunc == "get_cards_for_box":
+		boxId = '2'
+		return get_cards_for_box(request,boxId)
+
+	if myfunc == "set_card_name":
+		boxId = '138-236-209-167-111'
+		newName = 'Ellie'
+		return set_card_name(request,boxId,newName)
+
+	if myfunc == "get_card_by_name":
+		card_name = 'Ellie'
+		return get_card_by_name(request,card_name)
+
+	if myfunc == "add_card":
+		return add_card(request,'146-154-123-255-011','Chavka')
+
 
 	return HttpResponse("Blank")
