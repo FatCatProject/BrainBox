@@ -1,5 +1,6 @@
 from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting
-
+import time
+import datetime
 
 class BrainBoxDB:
 	### Start feeding_logs functiones ###
@@ -62,12 +63,20 @@ class BrainBoxDB:
 		"""
 		Getting a feeding_log as an object and Adding it to the DB
 		"""
+		open_t = time.localtime(myLog.open_time)  # type: time.struct_time
+		close_t = time.localtime(myLog.close_time)  # type: time.struct_time
 		FeedingLog.objects.create(
 			box_id=myLog.box_id,
 			feeding_id=myLog.feeding_id,
 			card_id=myLog.card_id,
-			open_time=myLog.open_time,
-			close_time=myLog.close_time,
+			open_time=datetime.datetime(
+				open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
+			close_time=datetime.datetime(
+				close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
 			start_weight=myLog.start_weight,
 			end_weight=myLog.end_weight,
 			synced=myLog.synced
@@ -95,8 +104,12 @@ class BrainBoxDB:
 		"""
 		Function gets a SystemLog object and writes it to the database
 		"""
+		time_stamp_t = time.localtime(myLog.time_stamp)  # type: time.struct_time
 		SystemLog.objects.create(
-			time_stamp=myLog.time_stamp,
+			time_stamp=datetime.datetime(
+				time_stamp_t.tm_year, time_stamp_t.tm_mon, time_stamp_t.tm_mday, time_stamp_t.tm_hour, time_stamp_t.tm_min, time_stamp_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
 			message=myLog.message,
 			message_type=myLog.message_type,
 			severity=myLog.severity
@@ -135,11 +148,11 @@ class BrainBoxDB:
 		return tuple(Account.objects.all())
 
 	@staticmethod
-	def add_account(account: Account):
+	def add_account(user:str, password:str):
 		"""
 		add a new account to DB
 		"""
-		Account.objects.create(user_name=account.user_name, password=account.password)
+		Account.objects.create(user_name=user, password=password)
 
 	@staticmethod
 	def change_user_name_and_or_password(acc: Account, new_user_name: str = None, new_password: str = None):

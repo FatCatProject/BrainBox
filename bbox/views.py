@@ -92,9 +92,9 @@ def get_account_info(request):
 	return HttpResponse(myAccount)
 
 
-def add_account(request, account):
-	mylog = BrainBoxDB.add_account(account)
-	return HttpResponse(mylog)
+def add_account(request,user,passwod):
+	mylog = BrainBoxDB.add_account(user,passwod)
+	return HttpResponse()
 
 
 def change_user_name_and_or_password(request, acc, user_name, password):
@@ -146,21 +146,12 @@ def test(request: HttpRequest):
 
 	if myfunc == "add_feeding_log":
 		box_id = FoodBox.objects.get(pk=2)
-		open_t = time.localtime(1503402679)  # type: time.struct_time
-		close_t = time.localtime(1503402679)  # type: time.struct_time
 		myLog = FeedingLog(
 			box_id=box_id,
 			feeding_id='2a27f997dc8f47499623d125f1f4b4df',
 			card_id='138-236-209-167-000',
-			open_time=datetime.datetime(
-				open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-
-			),
-			close_time=datetime.datetime(
-				close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
+			open_time=1503402679,
+			close_time=1503402679,
 			start_weight='3',
 			end_weight='3',
 			synced=False
@@ -174,13 +165,8 @@ def test(request: HttpRequest):
 		return get_all_system_logs(request)
 
 	if myfunc == "add_system_log":
-		log_time = time.localtime(1503402679)  # type: time.struct_time
-		print(log_time)
 		myLog = SystemLog(
-			time_stamp=datetime.datetime(
-				log_time.tm_year, log_time.tm_mon, log_time.tm_mday, log_time.tm_hour, log_time.tm_min, log_time.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
+			time_stamp=1503402679,
 			message='msgNew',
 			message_type='Information',
 			severity=3
@@ -201,8 +187,7 @@ def test(request: HttpRequest):
 
 	if myfunc == "add_account":
 		# Why not just Account.objects.create(user_name='Kot', password='Kot') then?
-		acc = Account(user_name='Kot', password='Kot')
-		return add_account(request, acc)
+		return add_account(request, 'a','a')
 
 	if myfunc == "change_user_name_and_or_password":
 		user_name = 'kottt'

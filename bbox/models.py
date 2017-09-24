@@ -91,3 +91,17 @@ class SystemSetting(models.Model):
 		return "key_name: {0}, value_text: {1} \n".format(
 			self.key_name, self.value_text
 		)
+
+
+class Card(models.Model):
+	card_id = models.TextField(primary_key=True, db_column="card_id")
+	card_name = models.TextField(blank=False, default=card_id, db_column="card_name")
+	active = models.BooleanField(default=True, blank=False, db_column="active")
+	changed_date = models.DateTimeField(blank=False, db_column="changed_date")
+
+	class Meta:
+		managed = True
+		db_table = "cards"
+
+	def __str__(self):
+		return "card_id: {0}, card_name: {1}, active: {2}, changed_date: {3}".format(self.card_id, self.card_name, self.active, self.changed_date)
