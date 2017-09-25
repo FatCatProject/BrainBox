@@ -1,5 +1,7 @@
-from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting
-
+from .models import FeedingLog, Account, FoodBox, SystemLog, SystemSetting, Card, CardOpen
+import time
+import datetime
+from itertools import chain
 
 class BrainBoxDB:
 	### Start feeding_logs functiones ###
@@ -62,12 +64,20 @@ class BrainBoxDB:
 		"""
 		Getting a feeding_log as an object and Adding it to the DB
 		"""
+		open_t = time.localtime(myLog.open_time)  # type: time.struct_time
+		close_t = time.localtime(myLog.close_time)  # type: time.struct_time
 		FeedingLog.objects.create(
 			box_id=myLog.box_id,
 			feeding_id=myLog.feeding_id,
 			card_id=myLog.card_id,
-			open_time=myLog.open_time,
-			close_time=myLog.close_time,
+			open_time=datetime.datetime(
+				open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
+			close_time=datetime.datetime(
+				close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
 			start_weight=myLog.start_weight,
 			end_weight=myLog.end_weight,
 			synced=myLog.synced
@@ -95,8 +105,12 @@ class BrainBoxDB:
 		"""
 		Function gets a SystemLog object and writes it to the database
 		"""
+		time_stamp_t = time.localtime(myLog.time_stamp)  # type: time.struct_time
 		SystemLog.objects.create(
-			time_stamp=myLog.time_stamp,
+			time_stamp=datetime.datetime(
+				time_stamp_t.tm_year, time_stamp_t.tm_mon, time_stamp_t.tm_mday, time_stamp_t.tm_hour, time_stamp_t.tm_min, time_stamp_t.tm_sec,
+				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+			),
 			message=myLog.message,
 			message_type=myLog.message_type,
 			severity=myLog.severity
@@ -135,11 +149,11 @@ class BrainBoxDB:
 		return tuple(Account.objects.all())
 
 	@staticmethod
-	def add_account(account: Account):
+	def add_account(user:str, password:str):
 		"""
 		add a new account to DB
 		"""
-		Account.objects.create(user_name=account.user_name, password=account.password)
+		Account.objects.create(user_name=user, password=password)
 
 	@staticmethod
 	def change_user_name_and_or_password(acc: Account, new_user_name: str = None, new_password: str = None):
@@ -178,3 +192,59 @@ class BrainBoxDB:
 		return FoodBox.objects.filter(box_id=boxId).first()
 
 	### END of FoodBox functions ###
+	### Start of Cards functions ###
+
+	@staticmethod
+	def get_all_cards():
+		return tuple(Card.objects.all())
+
+	@staticmethod
+	def get_cards(admin=False):
+		# if admin=false return all NON admin cards
+		# if admin=true return all admin cards
+		return tuple(Card.objects.filter(admin=admin))
+
+	@staticmethod
+	def get_boxes_for_card(card_id: str):
+		#returns tupple of foodBoxes
+		queryset = CardOpen.objects.filter(card_id=card_id)
+		boxes_ids = [entry.box_id for entry in queryset]
+		return tuple(boxes_ids)
+
+	@staticmethod
+	def get_cards_for_box(box_id: str):
+		#returns tupple of cards that are Active
+		queryset = CardOpen.objects.filter(box_id=box_id,active=True)
+		cards = [entry.card_id for entry in queryset]
+		return tuple(cards)
+
+	@staticmethod
+	def set_card_name(card_id: str , new_name: str):
+		Card.objects.filter(card_id=card_id).update(card_name=new_name)
+
+	@staticmethod
+	def get_card_by_name(card_name: str):
+		return Card.objects.filter(card_name=card_name)
+
+	@staticmethod
+	def add_card(card_id:str, card_name:str = None, isAdmin:bool = False):
+		Card.objects.create(card_id=card_id,card_name=card_name,admin=isAdmin)
+
+	@staticmethod
+	def set_card_active_for_box(card_id:str, box_id:str):
+		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=True)
+
+	@staticmethod
+	def set_card_not_active_for_box(card_id: str, box_id: str):
+		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=False)
+
+	@staticmethod
+	def associate_card_with_box(card_id: str, box_id: str):
+		#add active card with box to CardOpen table
+		CardOpen.objects.create(card_id=card_id, box_id=box_id , active=True, changed_date=datetime.datetime.now())
+
+	@staticmethod
+	def delete_card(card_id:str):
+		Card.objects.filter(card_id=card_id).delete()
+	### END of Cards functions ###
+

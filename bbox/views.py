@@ -5,7 +5,7 @@ import time
 import datetime
 from django.utils import timezone
 
-from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox
+from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox, Card
 
 from bbox.bboxDB import BrainBoxDB
 
@@ -92,9 +92,9 @@ def get_account_info(request):
 	return HttpResponse(myAccount)
 
 
-def add_account(request, account):
-	mylog = BrainBoxDB.add_account(account)
-	return HttpResponse(mylog)
+def add_account(request,user,passwod):
+	mylog = BrainBoxDB.add_account(user,passwod)
+	return HttpResponse()
 
 
 def change_user_name_and_or_password(request, acc, user_name, password):
@@ -116,6 +116,49 @@ def get_foodBox_by_foodBox_id(request, id):
 	mylog = BrainBoxDB.get_foodBox_by_foodBox_id(id)
 	return HttpResponse(mylog)
 
+def get_all_cards(request):
+	cards = BrainBoxDB.get_all_cards()
+	return HttpResponse(cards)
+
+def get_cards(request,isadmin):
+	cards = BrainBoxDB.get_cards(isadmin)
+	return HttpResponse(cards)
+
+def get_boxes_for_card(request,cardID):
+	boxes = BrainBoxDB.get_boxes_for_card(cardID)
+	return HttpResponse(boxes)
+
+def get_cards_for_box(request,boxID):
+	boxes = BrainBoxDB.get_cards_for_box(boxID)
+	return HttpResponse(boxes)
+
+def set_card_name(request, id, newName):
+	card = BrainBoxDB.set_card_name(id, newName)
+	return HttpResponse(card)
+
+def get_card_by_name(request, name):
+	card = BrainBoxDB.get_card_by_name(name)
+	return HttpResponse(card)
+
+def add_card(request, card_id, card_name):
+	card = BrainBoxDB.add_card(card_id, card_name)
+	return HttpResponse(card)
+
+def set_card_active_for_box(request, card_id, box_id):
+	card = BrainBoxDB.set_card_active_for_box(card_id, box_id)
+	return HttpResponse(card)
+
+def set_card_not_active_for_box(request, card_id, box_id):
+	card = BrainBoxDB.set_card_not_active_for_box(card_id, box_id)
+	return HttpResponse(card)
+
+def associate_card_with_box(request,card_id,box_id):
+	cardOpen = BrainBoxDB.associate_card_with_box(card_id,box_id)
+	return HttpResponse(cardOpen)
+
+def delete_card(request,card_id):
+	card = BrainBoxDB.delete_card(card_id)
+	return HttpResponse(card)
 
 def test(request: HttpRequest):
 	myfunc = request.GET.get("func")
@@ -146,21 +189,12 @@ def test(request: HttpRequest):
 
 	if myfunc == "add_feeding_log":
 		box_id = FoodBox.objects.get(pk=2)
-		open_t = time.localtime(1503402679)  # type: time.struct_time
-		close_t = time.localtime(1503402679)  # type: time.struct_time
 		myLog = FeedingLog(
 			box_id=box_id,
 			feeding_id='2a27f997dc8f47499623d125f1f4b4df',
 			card_id='138-236-209-167-000',
-			open_time=datetime.datetime(
-				open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-
-			),
-			close_time=datetime.datetime(
-				close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
+			open_time=1503402679,
+			close_time=1503402679,
 			start_weight='3',
 			end_weight='3',
 			synced=False
@@ -174,13 +208,8 @@ def test(request: HttpRequest):
 		return get_all_system_logs(request)
 
 	if myfunc == "add_system_log":
-		log_time = time.localtime(1503402679)  # type: time.struct_time
-		print(log_time)
 		myLog = SystemLog(
-			time_stamp=datetime.datetime(
-				log_time.tm_year, log_time.tm_mon, log_time.tm_mday, log_time.tm_hour, log_time.tm_min, log_time.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
+			time_stamp=1503402679,
 			message='msgNew',
 			message_type='Information',
 			severity=3
@@ -201,8 +230,7 @@ def test(request: HttpRequest):
 
 	if myfunc == "add_account":
 		# Why not just Account.objects.create(user_name='Kot', password='Kot') then?
-		acc = Account(user_name='Kot', password='Kot')
-		return add_account(request, acc)
+		return add_account(request, 'a','a')
 
 	if myfunc == "change_user_name_and_or_password":
 		user_name = 'kottt'
@@ -220,5 +248,46 @@ def test(request: HttpRequest):
 
 	if myfunc == "get_foodBox_by_foodBox_id":
 		return get_foodBox_by_foodBox_id(request, id='1')
+
+	if myfunc == "get_all_cards":
+		return get_all_cards(request)
+
+	if myfunc == "get_cards":
+		isAdmin = False
+		return get_cards(request, isAdmin)
+
+	if myfunc == "get_boxes_for_card":
+		card = '146-041-165-049-000'
+		return get_boxes_for_card(request,card)
+
+	if myfunc == "get_cards_for_box":
+		boxId = '2'
+		return get_cards_for_box(request,boxId)
+
+	if myfunc == "set_card_name":
+		boxId = '138-236-209-167-111'
+		newName = 'Ellie'
+		return set_card_name(request,boxId,newName)
+
+	if myfunc == "get_card_by_name":
+		card_name = 'Ellie'
+		return get_card_by_name(request,card_name)
+
+	if myfunc == "add_card":
+		return add_card(request,'146-154-123-255-011','Chavka')
+
+	if myfunc == "set_card_active_for_box":
+		return set_card_active_for_box(request,'102-165-229-203-000',1)
+
+	if myfunc == "set_card_not_active_for_box":
+		return set_card_not_active_for_box(request,'102-165-229-203-000',1)
+
+	if myfunc == "associate_card_with_box":
+		card = Card.objects.get(card_id='102-165-229-203-000')
+		box = FoodBox.objects.get(box_id=1)
+		return associate_card_with_box(request, card, box)
+
+	if myfunc == "delete_card":
+		return delete_card(request, '138-236-209-167-001')
 
 	return HttpResponse("Blank")
