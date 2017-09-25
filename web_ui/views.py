@@ -76,6 +76,21 @@ def logout(request):
 	auth.logout(request=request)
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
+
+@login_required()
+def check_server_connection(request):
+	return HttpResponseRedirect(redirect_to="/web_ui/")
+
+
+@login_required()
+def sync_box(request):
+	return HttpResponseRedirect(redirect_to="/web_ui/")
+
+
+@login_required()
+def ping_server(request):
+	return HttpResponseRedirect(redirect_to="/web_ui/")
+
 # from django.core import serializers
 # data = serializers.serialize("xml", SomeModel.objects.all())
 # XMLSerializer = serializers.get_serializer("xml")

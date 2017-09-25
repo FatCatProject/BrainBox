@@ -12,7 +12,9 @@
         </form>
     </div>
     <div>
-        <form name="check_connection_to_server_form" method="POST" action="{% url "ping_server" %}">{% csrf_token %}
+        <form name="check_connection_to_server_form" method="POST"
+              action="{% url "check_server_connection" %}">{% csrf_token %}
+            Check server connection:
             <button type="submit">Check</button>
         </form>
     </div>
