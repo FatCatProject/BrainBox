@@ -8,5 +8,5 @@ urlpatterns = [
 	url(r'^logout$', views.logout, name='logout'),
 	url(r'^check_server_connection$', views.check_server_connection, name='check_server_connection'),
 	url(r'^sync_box$', views.sync_box, name='sync_box'),
-	url(r'^ping_server$', views.ping_server, name='ping_server')
+	url(r'^server_sync$', views.server_sync, name='server_sync')
 ]

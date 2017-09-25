@@ -30,8 +30,8 @@
         {% endfor %}
     </div>
     <div>
-        Last sync with server: {{ server_last_ping }} <br/>
-        <form name="server_ping_form" method="POST" action="{% url "ping_server" %}">{% csrf_token %}
+        Last sync with server: {{ server_last_sync }} <br/>
+        <form name="server_sync_form" method="POST" action="{% url "server_sync" %}">{% csrf_token %}
             <button type="submit">sync now</button>
         </form>
     </div>

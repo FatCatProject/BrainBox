@@ -5,11 +5,29 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.utils.html import escape, strip_tags
 from django.db import IntegrityError
+from bbox.bboxDB import BrainBoxDB
+from time import asctime, localtime
 
 
 @login_required(login_url='login')
 def index(request):
-	return render(request, template_name="web_ui/index.html")
+	user = auth.get_user(request=request)
+
+	food_boxes = BrainBoxDB.get_all_foodBoxes()
+
+	server_last_sync = BrainBoxDB.get_system_setting("Server_Last_Sync")
+
+	if server_last_sync is None:
+		server_last_sync = "Never"
+	else:
+		server_last_sync = asctime(localtime(float(server_last_sync.value_text)))
+
+	context_dict = {
+		"account_name": user.username,
+		"food_boxes": food_boxes,
+		"server_last_sync": server_last_sync
+	}
+	return render(request, template_name="web_ui/index.html", context=context_dict)
 
 
 def login(request):
@@ -57,7 +75,6 @@ def register(request):
 				new_user = User.objects.create_user(
 					username=user_name, email=user_name, password=password, **{"is_staff": False}
 				)
-				# TODO - log the user in
 				auth.login(request=request, user=new_user)
 				return HttpResponseRedirect(redirect_to="/web_ui/")
 			except IntegrityError as e:
@@ -79,16 +96,19 @@ def logout(request):
 
 @login_required()
 def check_server_connection(request):
+	# TODO
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
 
 @login_required()
 def sync_box(request):
+	# TODO
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
 
 @login_required()
-def ping_server(request):
+def server_sync(request):
+	# TODO
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
 # from django.core import serializers
