@@ -211,19 +211,40 @@ class BrainBoxDB:
 		boxes_ids = [entry.box_id for entry in queryset]
 		return tuple(boxes_ids)
 
+	@staticmethod
 	def get_cards_for_box(box_id: str):
 		#returns tupple of cards that are Active
 		queryset = CardOpen.objects.filter(box_id=box_id,active=True)
 		cards = [entry.card_id for entry in queryset]
 		return tuple(cards)
 
+	@staticmethod
 	def set_card_name(card_id: str , new_name: str):
 		Card.objects.filter(card_id=card_id).update(card_name=new_name)
 
+	@staticmethod
 	def get_card_by_name(card_name: str):
 		return Card.objects.filter(card_name=card_name)
 
+	@staticmethod
 	def add_card(card_id:str, card_name:str = None, isAdmin:bool = False):
 		Card.objects.create(card_id=card_id,card_name=card_name,admin=isAdmin)
+
+	@staticmethod
+	def set_card_active_for_box(card_id:str, box_id:str):
+		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=True)
+
+	@staticmethod
+	def set_card_not_active_for_box(card_id: str, box_id: str):
+		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=False)
+
+	@staticmethod
+	def associate_card_with_box(card_id: str, box_id: str):
+		#add active card with box to CardOpen table
+		CardOpen.objects.create(card_id=card_id, box_id=box_id , active=True, changed_date=datetime.datetime.now())
+
+	@staticmethod
+	def delete_card(card_id:str):
+		Card.objects.filter(card_id=card_id).delete()
 	### END of Cards functions ###
 

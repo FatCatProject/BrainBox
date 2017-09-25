@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -44,7 +46,7 @@ class Card(models.Model):
 
 class CardOpen(models.Model):
 	rowid = models.AutoField(primary_key=True, db_column="rowid")
-	card_id = models.ForeignKey(Card, blank=False, db_column="card_id")
+	card_id = models.ForeignKey(Card, blank=False, db_column="card_id", on_delete=models.CASCADE)
 	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
 	active = models.BooleanField(default=True, blank=False, db_column="active")
 	changed_date = models.DateTimeField(blank=False, db_column="changed_date")

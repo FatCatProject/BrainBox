@@ -5,7 +5,7 @@ import time
 import datetime
 from django.utils import timezone
 
-from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox
+from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox, Card
 
 from bbox.bboxDB import BrainBoxDB
 
@@ -144,8 +144,21 @@ def add_card(request, card_id, card_name):
 	card = BrainBoxDB.add_card(card_id, card_name)
 	return HttpResponse(card)
 
+def set_card_active_for_box(request, card_id, box_id):
+	card = BrainBoxDB.set_card_active_for_box(card_id, box_id)
+	return HttpResponse(card)
 
+def set_card_not_active_for_box(request, card_id, box_id):
+	card = BrainBoxDB.set_card_not_active_for_box(card_id, box_id)
+	return HttpResponse(card)
 
+def associate_card_with_box(request,card_id,box_id):
+	cardOpen = BrainBoxDB.associate_card_with_box(card_id,box_id)
+	return HttpResponse(cardOpen)
+
+def delete_card(request,card_id):
+	card = BrainBoxDB.delete_card(card_id)
+	return HttpResponse(card)
 
 def test(request: HttpRequest):
 	myfunc = request.GET.get("func")
@@ -263,5 +276,18 @@ def test(request: HttpRequest):
 	if myfunc == "add_card":
 		return add_card(request,'146-154-123-255-011','Chavka')
 
+	if myfunc == "set_card_active_for_box":
+		return set_card_active_for_box(request,'102-165-229-203-000',1)
+
+	if myfunc == "set_card_not_active_for_box":
+		return set_card_not_active_for_box(request,'102-165-229-203-000',1)
+
+	if myfunc == "associate_card_with_box":
+		card = Card.objects.get(card_id='102-165-229-203-000')
+		box = FoodBox.objects.get(box_id=1)
+		return associate_card_with_box(request, card, box)
+
+	if myfunc == "delete_card":
+		return delete_card(request, '138-236-209-167-001')
 
 	return HttpResponse("Blank")
