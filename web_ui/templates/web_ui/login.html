@@ -1,0 +1,24 @@
+{% extends "web_ui/site_template.html" %}
+
+{% block  title %}
+    <title>Login page</title>
+{% endblock %}
+
+{% block content %}
+    <form name="login_form" method="POST" action="{% url "login" %}">{% csrf_token %}
+        <div>
+            User name:
+            <input type="email" name="user_name" placeholder="{{ user_name }}" required/>
+        </div>
+        <div>
+            Password:
+            <input type="password" name="password" required/>
+        </div>
+        <br/>
+        <div>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+    <div style="color: red">{{ login_error_msg }}</div>
+    <div><a href="{% url "register" %}">Register</a></div>
+{% endblock %}

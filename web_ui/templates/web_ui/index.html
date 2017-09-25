@@ -1,5 +1,15 @@
 {% extends "web_ui/site_template.html" %}
 
+{% block  title %}
+    <title>Index title place holder</title>
+{% endblock %}
+
 {% block content %}
-<span>Place holder.</span>
+    <div>
+        {{ request.user.username }}
+         <form name="logout_form" method="POST" action="{% url "logout" %}">{% csrf_token %}
+            <button type="submit">Logout</button>
+         </form>
+    </div>
+    <div>Place holder.</div>
 {% endblock %}

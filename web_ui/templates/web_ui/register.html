@@ -1,0 +1,23 @@
+{% extends "web_ui/site_template.html" %}
+
+{% block  title %}
+    <title>Register page</title>
+{% endblock %}
+
+{% block content %}
+    <form name="register_form" method="POST" action="{% url "register" %}">{% csrf_token %}
+        <div>
+            User name:
+            <input type="email" name="user_name" required/>
+        </div>
+        <div>
+            Password:
+            <input type="password" name="password" required/>
+        </div>
+        <br/>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+    <div style="color: red">{{ register_error_msg }}</div>
+{% endblock %}
