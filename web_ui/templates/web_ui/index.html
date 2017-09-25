@@ -6,10 +6,31 @@
 
 {% block content %}
     <div>
-        {{ request.user.username }}
-         <form name="logout_form" method="POST" action="{% url "logout" %}">{% csrf_token %}
+        {{ account_name }}
+        <form name="logout_form" method="POST" action="{% url "logout" %}">{% csrf_token %}
             <button type="submit">Logout</button>
-         </form>
+        </form>
     </div>
-    <div>Place holder.</div>
+    <div>
+        <form name="check_connection_to_server_form" method="POST" action="{% url "ping_server" %}">{% csrf_token %}
+            <button type="submit">Check</button>
+        </form>
+    </div>
+    <div>
+        My food boxes:<br/>
+        {% for box in food_boxes %}
+            <form name="box_form" method="POST" action="{% url "sync_box" %}">{% csrf_token %}
+                Box name: {{ box.box_name }} <br/>
+                Last synced: {{ box.box_last_sync }} <br/>
+                <input type="hidden" name="box_id" value="{{ box.box_id }}">
+                <button type="submit">Sync now</button>
+            </form>
+        {% endfor %}
+    </div>
+    <div>
+        Last sync with server: {{ server_last_ping }} <br/>
+        <form name="server_ping_form" method="POST" action="{% url "ping_server" %}">{% csrf_token %}
+            <button type="submit">sync now</button>
+        </form>
+    </div>
 {% endblock %}

@@ -58,6 +58,7 @@ def register(request):
 					username=user_name, email=user_name, password=password, **{"is_staff": False}
 				)
 				# TODO - log the user in
+				auth.login(request=request, user=new_user)
 				return HttpResponseRedirect(redirect_to="/web_ui/")
 			except IntegrityError as e:
 				# TODO - This should never actually happen.
@@ -66,7 +67,7 @@ def register(request):
 	else:
 		pass
 	return render(
-		request, template_name="web_ui/register.html", context={"login_error_msg": register_error_msg}
+		request, template_name="web_ui/register.html", context={"register_error_msg": register_error_msg}
 	)
 
 
