@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from web_ui.views import index as web_ui_index
 
 urlpatterns = [
-	url(r'^admin/', admin.site.urls), url(r'^bbox/', include('bbox.urls')), url(r'^web_ui/', include('web_ui.urls')),
+	url(r'^admin/', admin.site.urls),
+	url(r'^bbox/', include('bbox.urls')),
+	url(r'^web_ui/', include('web_ui.urls')),
+	url(r'^$', web_ui_index),
 ]

@@ -1,5 +1,38 @@
 {% extends "web_ui/site_template.html" %}
 
+{% block  title %}
+    <title>Index title place holder</title>
+{% endblock %}
+
 {% block content %}
-<span>Place holder.</span>
+    <div>
+        {{ account_name }}
+        <form name="logout_form" method="POST" action="{% url "logout" %}">{% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    <div>
+        <form name="check_connection_to_server_form" method="POST"
+              action="{% url "check_server_connection" %}">{% csrf_token %}
+            Check server connection:
+            <button type="submit">Check</button>
+        </form>
+    </div>
+    <div>
+        My food boxes:<br/>
+        {% for box in food_boxes %}
+            <form name="box_form" method="POST" action="{% url "sync_box" %}">{% csrf_token %}
+                Box name: {{ box.box_name }} <br/>
+                Last synced: {{ box.box_last_sync }} <br/>
+                <input type="hidden" name="box_id" value="{{ box.box_id }}">
+                <button type="submit">Sync now</button>
+            </form>
+        {% endfor %}
+    </div>
+    <div>
+        Last sync with server: {{ server_last_sync }} <br/>
+        <form name="server_sync_form" method="POST" action="{% url "server_sync" %}">{% csrf_token %}
+            <button type="submit">sync now</button>
+        </form>
+    </div>
 {% endblock %}

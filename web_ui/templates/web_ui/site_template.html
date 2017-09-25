@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    {% block title %}
+    {% endblock %}
     {% load static %}
     <link rel="stylesheet" href="{% static  "css/bootstrap.min.css" %}">
     <script src="{% static "js/jquery-3.2.1.slim.min.js" %}"></script>
