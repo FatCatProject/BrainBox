@@ -5,20 +5,57 @@
 {% endblock %}
 
 {% block content %}
-    <form name="login_form" method="POST" action="{% url "login" %}">{% csrf_token %}
-        <div>
-            User name:
-            <input type="email" name="user_name" placeholder="{{ user_name }}" required/>
+    <body class="sign-in-up">
+    <section>
+        <div id="page-wrapper" class="sign-in-wrapper">
+            <div class="graphs">
+                <div class="sign-in-form">
+                    <div class="sign-in-form-top">
+                        <p><span></span> <a href="index.html"></a></p>
+                    </div>
+                    <div class="signin">
+                        <p style="padding-bottom:20px"><span style="color:#999999;">Login:</span></p>
+                        <form name="login_form" method="POST" action="{% url "login" %}">{% csrf_token %}
+                            <div class="log-input">
+                                <div class="">
+                                    <input type="email" class="user" name="user_name" value="username"
+                                           placeholder="{{ user_name }}" onfocus="this.value = '';"
+                                           onblur="if (this.value == '') {this.value = 'Username';}" required/>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="log-input">
+                                <div class="">
+                                    <input type="password" name="password" class="lock" value="password"
+                                           onfocus="this.value = '';"
+                                           onblur="if (this.value == '') {this.value = 'Password';}" required/>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div style="color: red">{{ login_error_msg }}</div>
+                            </div>
+                            <input type="submit" value="Login to your account">
+                        </form>
+                        <div class="signin-text">
+                            <div class="text-right">
+                                <p><a href="{% url "register" %}"><input type="submit" value="Register"></a></p>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            Password:
-            <input type="password" name="password" required/>
-        </div>
-        <br/>
-        <div>
-            <button type="submit">Login</button>
-        </div>
-    </form>
-    <div style="color: red">{{ login_error_msg }}</div>
-    <div><a href="{% url "register" %}">Register</a></div>
+    </section>
+    <script src="js/jquery.nicescroll.js"></script>
+    <script src="js/scripts.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+    </body>
 {% endblock %}
+
+
+
+
+
+
+
