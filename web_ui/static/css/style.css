@@ -4679,7 +4679,7 @@ span.badge1 {
 	border:1px solid #F44336;
 }
 .sign-in-form-top{
-	background:url(../images/3.jpg) no-repeat 0px -55px;
+	background:url(../images/3.jpg) repeat-x 0px -55px;
 	display:block;
 	min-height:150px;
 	padding:3em 0 0;
@@ -4708,7 +4708,7 @@ span.badge1 {
 }
 .signin:after {
     content: '';
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x;
     display: block;
     width: 595px;
     height: 20px;
@@ -5108,7 +5108,7 @@ canvas#bar1 {
     width: 39%;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 590px;
     background-size: 100%;
 }
@@ -5213,7 +5213,7 @@ canvas#pie {
     width: 26%;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 563px;
     background-size: 100%;
 }
@@ -5333,7 +5333,7 @@ canvas#pie {
     min-height: 1735px !important;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 520px;
     background-size: 100%;
 }
@@ -6532,7 +6532,7 @@ div#page-wrapper {
     min-height: 2560px !important;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 482px;
     background-size: 100%;
 }
@@ -6817,7 +6817,7 @@ span.checkbox1 {
     padding: 0.5em 1em 0.5em 1em;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 405px;
     background-size: 100%;
 }
@@ -7363,7 +7363,7 @@ span.checkbox1 {
     margin-bottom: 10px;
 }
 .signin:after {
-    background: url(../images/6.png) no-repeat 0px 0px;
+    background: url(../images/6.png) repeat-x 0px 0px;
     width: 305px;
     background-size: 100%;
 }

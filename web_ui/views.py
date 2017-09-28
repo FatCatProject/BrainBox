@@ -32,7 +32,7 @@ def index(request):
 
 def login(request):
 	# TODO - Get user_name from cookie
-	user_name = "User name"
+	user_name = "Username"
 	login_error_msg = ""
 
 	user = auth.get_user(request=request)
@@ -64,7 +64,7 @@ def register(request):
 	user_count = User.objects.filter(is_staff=False).count()
 	if user_count > 0:
 		# TODO - Allow deleting account info.
-		register_error_msg = "User already registered!"
+		register_error_msg = "This product already has a registered user on Fatcat.com. For retrieving the username and password please reffer to Fatcat.com."
 	elif request.method == "POST":
 
 		user_name = escape(strip_tags(request.POST["user_name"]))
