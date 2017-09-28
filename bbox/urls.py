@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
 	url(r'^test/$', views.test, ),
+	url(r'^pushlogs/$', views.pushlogs, name="pushlogs")
 ]
