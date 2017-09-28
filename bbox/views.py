@@ -4,6 +4,7 @@ from django.http import HttpRequest
 import time
 import datetime
 from django.utils import timezone
+import json
 
 from .models import FeedingLog, Account, SystemLog, SystemSetting, FoodBox, Card
 
@@ -291,3 +292,28 @@ def test(request: HttpRequest):
 		return delete_card(request, '138-236-209-167-001')
 
 	return HttpResponse("Blank")
+
+
+def pushlogs(request):
+	""" Add FeedingLogs to a specific FoodBox's log and confirm them in the response."""
+	foodbox_id = request.POST["box_id"]
+	request_feedinglogs = request.POST["feeding_logs"]
+
+	confirmed_ids = []
+	for log in request_feedinglogs:
+		tmp_feeding_id = log["feeding_id"]
+		tmp_card_id = log["card_id"]
+		tmp_open_time = log["open_time"]
+		tmp_close_time = log["close_time"]
+		tmp_start_weight = log["start_weight"]
+		tmp_end_weight = log["end_weight"]
+		tmp_feedinglog = FeedingLog(
+			box_id=foodbox_id, feeding_id=tmp_feeding_id, card_id=tmp_card_id, open_time=tmp_open_time,
+			close_time=tmp_close_time, start_weight=tmp_start_weight, end_weight=tmp_end_weight, synced=False
+		)
+		BrainBoxDB.add_feeding_log(tmp_feedinglog)
+		confirmed_ids.append(tmp_feeding_id)
+
+	response_json = json.dumps({"confirm_ids": confirmed_ids})
+	response = HttpResponse(content=response_json, content_type="application/json", status=200)
+	return response
