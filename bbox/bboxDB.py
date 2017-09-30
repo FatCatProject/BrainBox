@@ -232,6 +232,11 @@ class BrainBoxDB:
 		return tuple(cards)
 
 	@staticmethod
+	def get_unsynced_cards_for_box(box_id: str):
+		queryset = CardOpen.objects.filter(box_id=box_id, synced=False)
+		return tuple([entry for entry in queryset])
+
+	@staticmethod
 	def set_card_name(card_id: str , new_name: str):
 		Card.objects.filter(card_id=card_id).update(card_name=new_name)
 
