@@ -333,3 +333,43 @@ def pushlogs(request):
 	response_json = json.dumps({"confirm_ids": confirmed_ids})
 	response = HttpResponse(content=response_json, content_type="application/json", status=200)
 	return response
+
+
+def pullcards(request, box_id):
+	request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(box_id)  # type: FoodBox
+	cards_to_sync = BrainBoxDB.get_unsynced_cards_for_box(box_id=request_foodbox.box_id)
+	admin_cards = BrainBoxDB.get_cards(admin=True)
+
+	cards_to_sync_list = [
+		{
+			"card_id": cardopen.card_id.card_id,
+			"active": cardopen.active,
+			"card_name": cardopen.card_id.card_name
+		}
+		for cardopen in cards_to_sync
+	]
+	admin_cards_list = [
+		{
+			"card_id": card.card_id,
+			"active": True,  # TODO - Change this to real value
+			"card_name": "ADMIN"
+		}
+		for card in admin_cards
+	]
+
+	request_foodbox.box_ip = request.META["REMOTE_ADDR"]
+	now = time.localtime()
+	now_datetime = datetime.datetime(
+		now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec,
+		tzinfo=datetime.timezone(offset=datetime.timedelta())
+	)
+	request_foodbox.box_last_sync = now_datetime
+	request_foodbox.save()
+
+	for cardopen in cards_to_sync:
+		cardopen.synced = True
+		cardopen.save()
+
+	response_json = json.dumps({"admin_cards": admin_cards_list, "modified_cards": [], "new_cards": cards_to_sync_list})
+	response = HttpResponse(content=response_json, content_type="application/json", status=200)
+	return response
