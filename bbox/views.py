@@ -338,7 +338,7 @@ def pushlogs(request):
 def pullcards(request, box_id):
 	request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(box_id)  # type: FoodBox
 	cards_to_sync = BrainBoxDB.get_unsynced_cards_for_box(box_id=request_foodbox.box_id)
-	admin_cards = BrainBoxDB.get_cards(admin=True)
+	# admin_cards = BrainBoxDB.get_cards(admin=True)
 
 	cards_to_sync_list = [
 		{
@@ -346,15 +346,15 @@ def pullcards(request, box_id):
 			"active": cardopen.active,
 			"card_name": cardopen.card_id.card_name
 		}
-		for cardopen in cards_to_sync
+		for cardopen in cards_to_sync if not cardopen.card_id.admin
 	]
 	admin_cards_list = [
 		{
-			"card_id": card.card_id,
-			"active": True,  # TODO - Change this to real value
+			"card_id": cardopen.card_id.card_id,
+			"active": cardopen.active,
 			"card_name": "ADMIN"
 		}
-		for card in admin_cards
+		for cardopen in cards_to_sync if cardopen.card_id.admin
 	]
 
 	request_foodbox.box_ip = request.META["REMOTE_ADDR"]
