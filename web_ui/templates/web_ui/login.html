@@ -5,20 +5,49 @@
 {% endblock %}
 
 {% block content %}
-    <form name="login_form" method="POST" action="{% url "login" %}">{% csrf_token %}
-        <div>
-            User name:
-            <input type="email" name="user_name" placeholder="{{ user_name }}" required/>
+
+    <div id="page-wrapper" class="sign-in-wrapper">
+        <div class="sign-in-form">
+            <!-- Header start -->
+            {% include "web_ui/header_template.html" %}
+            <!-- Header end -->
+            <div class="signin">
+                <p style="padding-bottom:20px"><span style="color:#999999;">Login:</span></p>
+                <form name="login_form" method="POST" action="{% url "login" %}">{% csrf_token %}
+                    <div class="log-input">
+                        <div class="">
+                            <input type="email" class="user" name="user_name" value="{{ user_name }}"
+                                   onfocus="this.value = '';"
+                                   onblur="if (this.value == '') {this.value = 'Username';}" required/>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="log-input">
+                        <div class="">
+                            <input type="password" name="password" class="lock" value="password"
+                                   onfocus="this.value = '';"
+                                   onblur="if (this.value == '') {this.value = 'Password';}" required/>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div style="color: red">{{ login_error_msg }}</div>
+                    </div>
+                    <input type="submit" value="Login to your account">
+                </form>
+                <div class="signin-text">
+                    <div class="text-right">
+                        <p><a href="{% url "register" %}"><input type="submit" value="Register new account"></a></p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
         </div>
-        <div>
-            Password:
-            <input type="password" name="password" required/>
-        </div>
-        <br/>
-        <div>
-            <button type="submit">Login</button>
-        </div>
-    </form>
-    <div style="color: red">{{ login_error_msg }}</div>
-    <div><a href="{% url "register" %}">Register</a></div>
+    </div>
+
 {% endblock %}
+
+
+
+
+
+
+

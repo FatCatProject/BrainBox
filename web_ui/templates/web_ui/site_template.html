@@ -9,18 +9,30 @@
     <script src="{% static "js/jquery-3.2.1.slim.min.js" %}"></script>
     <script src="{% static "js/popper.min.js" %}"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static  "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static  "css/style.css" %}">
+    <link rel="stylesheet" href="{% static  "css/font.css" %}">
+    <link href='//fonts.googleapis.com/css?family=Cabin:400,400italic,500,500italic,600,600italic,700,700italic'
+          rel='stylesheet' type='text/css'>
+    <script type="application/x-javascript"> addEventListener("load", function () {
+        setTimeout(hideURLbar, 0);
+    }, false);
+
+    function hideURLbar() {
+        window.scrollTo(0, 1);
+    } </script>
 
 </head>
-<body>
-<!-- Header start -->
-{% include "web_ui/header_template.html" %}
-<!-- Header end -->
 
-{% block content %}
-{% endblock %}
+<body class="sign-in-up">
+<section>
 
-<!-- Footer start -->
-{% include "web_ui/footer_template.html" %}
-<!-- Footer end -->
+    {% block content %}
+    {% endblock %}
+
+    <!-- Footer start -->
+    {% include "web_ui/footer_template.html" %}
+    <!-- Footer end -->
+</section>
 </body>
 </html>
