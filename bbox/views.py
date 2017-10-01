@@ -373,3 +373,26 @@ def pullcards(request, box_id):
 	response_json = json.dumps({"admin_cards": admin_cards_list, "modified_cards": [], "new_cards": cards_to_sync_list})
 	response = HttpResponse(content=response_json, content_type="application/json", status=200)
 	return response
+
+
+def pullfoodbox(request, box_id):
+	request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(box_id)  # type: FoodBox
+	request_box_ip = request.META["REMOTE_ADDR"]
+	now = time.localtime()
+	now_datetime = datetime.datetime(
+		now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec,
+		tzinfo=datetime.timezone(offset=datetime.timedelta())
+	)
+
+	if not request_foodbox:
+		request_foodbox = FoodBox.objects.create(
+			box_id=box_id, box_ip=request_box_ip, box_name="FoodBox_{}".format(box_id), box_last_sync=now_datetime
+		)
+	else:
+		request_foodbox.box_ip = request_box_ip
+		request_foodbox.box_last_sync = now_datetime
+	request_foodbox.save()
+
+	response_json = json.dumps({"foodbox_name": request_foodbox.box_name})
+	response = HttpResponse(content=response_json, content_type="application/json", status=200)
+	return response
