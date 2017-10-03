@@ -299,7 +299,7 @@ def test(request: HttpRequest):
 def pushlogs(request):
 	""" Add FeedingLogs to a specific FoodBox's log and confirm them in the response."""
 
-	request_body = json.loads(request.body)
+	request_body = json.loads(request.body.decode("utf-8"))
 	request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(request_body["box_id"])  # type: FoodBox
 	box_cards = {
 		card.card_id: card for card in BrainBoxDB.get_cards_for_box(box_id=request_foodbox.box_id, active_only=False)
