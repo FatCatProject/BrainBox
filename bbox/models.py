@@ -50,6 +50,7 @@ class CardOpen(models.Model):
 	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
 	active = models.BooleanField(default=True, blank=False, db_column="active")
 	changed_date = models.DateTimeField(blank=False, db_column="changed_date")
+	synced = models.BooleanField(blank=False, default=False, db_column="synced")
 
 	class Meta:
 		managed = True

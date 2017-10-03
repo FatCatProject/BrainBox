@@ -64,20 +64,30 @@ class BrainBoxDB:
 		"""
 		Getting a feeding_log as an object and Adding it to the DB
 		"""
-		open_t = time.localtime(myLog.open_time)  # type: time.struct_time
-		close_t = time.localtime(myLog.close_time)  # type: time.struct_time
+		# open_t = time.localtime(myLog.open_time)  # type: time.struct_time
+		# close_t = time.localtime(myLog.close_time)  # type: time.struct_time
+		# FeedingLog.objects.create(
+		# 	box_id=myLog.box_id,
+		# 	feeding_id=myLog.feeding_id,
+		# 	card_id=myLog.card_id,
+		# 	open_time=datetime.datetime(
+		# 		open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
+		# 		tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+		# 	),
+		# 	close_time=datetime.datetime(
+		# 		close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
+		# 		tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
+		# 	),
+		# 	start_weight=myLog.start_weight,
+		# 	end_weight=myLog.end_weight,
+		# 	synced=myLog.synced
+		# )
 		FeedingLog.objects.create(
 			box_id=myLog.box_id,
 			feeding_id=myLog.feeding_id,
 			card_id=myLog.card_id,
-			open_time=datetime.datetime(
-				open_t.tm_year, open_t.tm_mon, open_t.tm_mday, open_t.tm_hour, open_t.tm_min, open_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
-			close_time=datetime.datetime(
-				close_t.tm_year, close_t.tm_mon, close_t.tm_mday, close_t.tm_hour, close_t.tm_min, close_t.tm_sec,
-				tzinfo=datetime.timezone(offset=datetime.timedelta())  # This basically means "UTC == Local Time"
-			),
+			open_time=myLog.open_time,
+			close_time=myLog.close_time,
 			start_weight=myLog.start_weight,
 			end_weight=myLog.end_weight,
 			synced=myLog.synced
@@ -212,11 +222,19 @@ class BrainBoxDB:
 		return tuple(boxes_ids)
 
 	@staticmethod
-	def get_cards_for_box(box_id: str):
-		#returns tupple of cards that are Active
-		queryset = CardOpen.objects.filter(box_id=box_id,active=True)
+	def get_cards_for_box(box_id: str, active_only: bool = True):
+		#returns tupple of cards
+		if active_only:
+			queryset = CardOpen.objects.filter(box_id=box_id, active=True)
+		else:
+			queryset = CardOpen.objects.filter(box_id=box_id)
 		cards = [entry.card_id for entry in queryset]
 		return tuple(cards)
+
+	@staticmethod
+	def get_unsynced_cards_for_box(box_id: str):
+		queryset = CardOpen.objects.filter(box_id=box_id, synced=False)
+		return tuple([entry for entry in queryset])
 
 	@staticmethod
 	def set_card_name(card_id: str , new_name: str):
