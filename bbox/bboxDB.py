@@ -134,7 +134,7 @@ class BrainBoxDB:
 	def get_system_setting(setting: str):
 		"""Function returns a value of a specific setting from enums that are available:
 			the input must be "SystemSettings.key_name"
-			key names: BrainBox_ID / BrainBox_Name / Sync_Interval
+			key names: BrainBox_ID / BrainBox_Name / Sync_Interval / Server_Address
 			If the key_name is still not written in the DB or has no value it returns None
 		"""
 		return SystemSetting.objects.filter(key_name=setting).first()
@@ -154,12 +154,12 @@ class BrainBoxDB:
 	@staticmethod
 	def get_account_info():
 		"""
-		Returns ALL account info: username&password
+		Returns account info: username&password
 		"""
-		return tuple(Account.objects.all())
+		return Account.objects.all().first()
 
 	@staticmethod
-	def add_account(user:str, password:str):
+	def add_account(user: str, password: str):
 		"""
 		add a new account to DB
 		"""
@@ -186,6 +186,14 @@ class BrainBoxDB:
 		Returns a tuple of all food_boxes
 		"""
 		return tuple(FoodBox.objects.all())
+
+	@staticmethod
+	def get_unsynced_foodBoxes():
+		"""
+		Returns a tuple of unsynced food_boxes
+		"""
+		queryset = FoodBox.objects.filter(synced=False)
+		return tuple([entry for entry in queryset])
 
 	@staticmethod
 	def delete_foodBox(foodBox: FoodBox):

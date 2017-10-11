@@ -5,7 +5,8 @@ from django.db import models
 
 class Account(models.Model):
 	user_name = models.TextField(primary_key=True, max_length=20, db_column="user_name")
-	password = models.TextField(blank=False, max_length=50, db_column="password")  # TODO - Secure this
+	password = models.TextField(blank=False, max_length=50, db_column="password")  # This is never used.
+	server_token = models.TextField(blank=True, db_column="server_token")
 
 	class Meta:
 		managed = True
@@ -20,6 +21,7 @@ class FoodBox(models.Model):
 	box_ip = models.TextField(blank=False, db_column="box_ip")
 	box_name = models.TextField(blank=False, db_column="box_name")
 	box_last_sync = models.DateTimeField(blank=False, db_column="box_last_synced")
+	synced = models.BooleanField(blank=False, default=False, db_column="synced")
 
 	class Meta:
 		managed = True
@@ -46,8 +48,13 @@ class Card(models.Model):
 
 class CardOpen(models.Model):
 	rowid = models.AutoField(primary_key=True, db_column="rowid")
-	card_id = models.ForeignKey(Card, blank=False, db_column="card_id", on_delete=models.CASCADE)
-	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
+	card_id = models.ForeignKey(
+		Card, blank=False, db_column="card_id",
+		on_delete=models.CASCADE
+	)  # fixme - Needs to be renamed to "card"
+	box_id = models.ForeignKey(
+		FoodBox, blank=False, db_column="box_id"
+	)  # fixme - Needs to be renamed to "foodbox"
 	active = models.BooleanField(default=True, blank=False, db_column="active")
 	changed_date = models.DateTimeField(blank=False, db_column="changed_date")
 	synced = models.BooleanField(blank=False, default=False, db_column="synced")
@@ -61,11 +68,16 @@ class CardOpen(models.Model):
 			self.rowid, self.card_id, self.box_id, self.active, self.changed_date
 		)
 
+
 class FeedingLog(models.Model):
 	rowid = models.AutoField(primary_key=True, db_column="rowid")
-	box_id = models.ForeignKey(FoodBox, blank=False, db_column="box_id")
+	box_id = models.ForeignKey(
+		FoodBox, blank=False, db_column="box_id"
+	)  # fixme - Needs to be renamed to "foodbox"
 	feeding_id = models.TextField(blank=False, db_column="feeding_id")
-	card_id = models.ForeignKey(Card, blank=False, db_column="card_id")
+	card_id = models.ForeignKey(
+		Card, blank=False, db_column="card_id"
+	)  # fixme - Needs to be renamed to "card"
 	open_time = models.DateTimeField(blank=False, db_column="open_time")
 	close_time = models.DateTimeField(blank=False, db_column="close_time")
 	start_weight = models.FloatField(blank=False, db_column="start_weight")
@@ -124,6 +136,3 @@ class SystemSetting(models.Model):
 		return "key_name: {0}, value_text: {1} \n".format(
 			self.key_name, self.value_text
 		)
-
-
-

@@ -7,6 +7,8 @@ from django.utils.html import escape, strip_tags
 from django.db import IntegrityError
 from bbox.bboxDB import BrainBoxDB
 from time import asctime, localtime
+from server_tasks.send import get_server_token
+from bbox.models import Account
 
 
 @login_required(login_url='login')
@@ -76,6 +78,9 @@ def register(request):
 					username=user_name, email=user_name, password=password, **{"is_staff": False}
 				)
 				auth.login(request=request, user=new_user)
+				BrainBoxDB.add_account(user=new_user.email, password=new_user.password)
+				new_server_token = get_server_token(user_name=new_user.email, password=password)
+				Account.objects.filter(user_name=new_user.email).update(server_token=new_server_token)
 				return HttpResponseRedirect(redirect_to="/web_ui/")
 			except IntegrityError as e:
 				# TODO - This should never actually happen.

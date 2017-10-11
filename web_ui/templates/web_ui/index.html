@@ -28,6 +28,8 @@
                                   action="{% url "check_server_connection" %}">{% csrf_token %}
                                 <a href="{% url "check_server_connection" %}">Check server connection</a>
                             </form>
+                            <button id="check_server_connection_button">Check server connection</button>
+                            <span id="server_connection_message">server_connection_message Place holder</span>
                         </h4>
                         <p style="color: red">Place holder - Connection response </p>
                     </div>
@@ -76,4 +78,27 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$("#check_server_connection_button").click(function(){
+				$.ajax({
+					url: "{%  url "external_trigger_check_server_connection" %}",
+					method: "GET",
+					success: function(result){
+						if(result.connection_status){
+							$("#server_connection_message").text("connection OK");
+
+						} else{
+							$("#server_connection_message").text("connection not OK");
+
+						}
+					},
+					error: function(xhr){
+						alert("An error has occurred: " + xhr.status + " " + xhr.statusText)
+					}
+				});
+			});
+		});
+    </script>
 {% endblock %}
