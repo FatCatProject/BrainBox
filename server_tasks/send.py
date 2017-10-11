@@ -242,6 +242,7 @@ def get_server_token(user_name: str, password: str):
 
 	now = time.time()
 	new_server_token = None
+	login_status = False
 	try:
 		server_response = requests.put(url=put_address, auth=my_auth)
 		if server_response.status_code != 200:
@@ -261,8 +262,18 @@ def get_server_token(user_name: str, password: str):
 				severity=0
 			)
 
-			new_server_token = json.loads(server_response.text)
+			server_response = json.loads(server_response.text)
 
+			new_server_token = server_response['server_token']
+			login_status = server_response['login_status']
+
+	except (json.decoder.JSONDecodeError, AttributeError) as e:
+		my_log = SystemLog(
+			time_stamp=now,
+			message="Server returned unexpected response: {0}".format(e.args),
+			message_type="Fatal",
+			severity=2
+		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
@@ -277,7 +288,7 @@ def get_server_token(user_name: str, password: str):
 	now = time.time()
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
-	return new_server_token
+	return new_server_token, login_status
 
 
 def head_check_server_connection():

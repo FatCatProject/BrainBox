@@ -8,7 +8,7 @@ from django.db import IntegrityError
 from bbox.bboxDB import BrainBoxDB
 from time import asctime, localtime
 from server_tasks.send import get_server_token
-from bbox.models import Account
+from bbox.models import Account, SystemSetting
 
 
 @login_required(login_url='login')
@@ -66,26 +66,39 @@ def register(request):
 	user_count = User.objects.filter(is_staff=False).count()
 	if user_count > 0:
 		# TODO - Allow deleting account info.
-		register_error_msg = "This product already has a registered user on Fatcat.com. For retrieving the username and password please reffer to Fatcat.com."
+		server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
+		if not server_address:
+			server_address = "the website"
+		else:
+			server_address = server_address.value_text
+		register_error_msg = (
+			"This product already has a registered user on {0}. For retrieving the username and password please refer "
+			"to {0}."
+		).format(server_address)
 	elif request.method == "POST":
 
 		user_name = escape(strip_tags(request.POST["user_name"]))
 		password = escape(strip_tags(request.POST["password"]))
 
 		if user_name is not None and user_name != "" and password is not None and password != "":
-			try:
-				new_user = User.objects.create_user(
-					username=user_name, email=user_name, password=password, **{"is_staff": False}
-				)
-				auth.login(request=request, user=new_user)
-				BrainBoxDB.add_account(user=new_user.email, password=new_user.password)
-				new_server_token = get_server_token(user_name=new_user.email, password=password)
-				Account.objects.filter(user_name=new_user.email).update(server_token=new_server_token)
-				return HttpResponseRedirect(redirect_to="/web_ui/")
-			except IntegrityError as e:
-				# TODO - This should never actually happen.
-				register_error_msg = "User name already exists. Though this should never happen."
+			new_server_token, login_status = get_server_token(user_name=user_name, password=password)
 
+			if not login_status:
+				register_error_msg = "Bad login information."
+			elif new_server_token is not None:
+				register_error_msg = "Something bad has happened, please try again later."
+			else:
+				try:
+					new_user = User.objects.create_user(
+						username=user_name, email=user_name, password=password, **{"is_staff": False}
+					)
+					auth.login(request=request, user=new_user)
+					BrainBoxDB.add_account(user=new_user.email, password=new_user.password)
+					Account.objects.filter(user_name=new_user.email).update(server_token=new_server_token)
+					return HttpResponseRedirect(redirect_to="/web_ui/")
+				except IntegrityError as e:
+					# TODO - This should never actually happen.
+					register_error_msg = "User name already exists. Though this should never happen."
 	else:
 		pass
 	return render(
