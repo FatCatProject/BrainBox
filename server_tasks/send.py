@@ -111,7 +111,7 @@ def put_foodboxes():
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 
-def put_foodlogs():
+def put_feedinglogs():
 	# TODO - SSL
 	my_account = BrainBoxDB.get_account_info()  # type: Account
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
@@ -237,14 +237,14 @@ def get_server_token(user_name: str, password: str):
 	my_auth = (user_name, password)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
-	put_address = "http://{0}/bbox/get_server_token/".format(server_address)
-	print("PUT address server_token: {0}".format(put_address))  # TODO - Delete debug message
+	get_address = "http://{0}/bbox/get_server_token/".format(server_address)
+	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
 	new_server_token = None
 	login_status = False
 	try:
-		server_response = requests.put(url=put_address, auth=my_auth)
+		server_response = requests.get(url=get_address, auth=my_auth)
 		if server_response.status_code != 200:
 			my_log = SystemLog(
 				time_stamp=now,
@@ -296,12 +296,12 @@ def head_check_server_connection():
 	assert server_address is not None
 
 	server_address = server_address.value_text
-	put_address = "http://{0}/bbox/head_check_server_connection/".format(server_address)
-	print("HEAD address check_server_connection: {0}".format(put_address))  # TODO - Delete debug message
+	head_address = "http://{0}/bbox/head_check_server_connection/".format(server_address)
+	print("HEAD address check_server_connection: {0}".format(head_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:
-		server_response = requests.head(url=put_address)
+		server_response = requests.head(url=head_address)
 
 		if server_response.status_code != 200:
 			my_log = SystemLog(

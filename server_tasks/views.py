@@ -12,7 +12,7 @@ def external_trigger_put_foodboxes(request):
 
 @login_required(login_url='login')
 def external_trigger_put_feeding_logs(request):
-	send_tasks.put_foodlogs()
+	send_tasks.put_feedinglogs()
 	return HttpResponse("external_trigger_put_feeding_logs")
 
 
