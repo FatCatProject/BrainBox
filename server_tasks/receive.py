@@ -16,7 +16,7 @@ def get_cards():
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
 	server_address = server_address.value_text
-	get_address = "http://{0}/bbox/get_card/".format(server_address)
+	get_address = "http://{0}/api/bbox/get_card/".format(server_address)
 	print("GET address get_card: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
@@ -117,7 +117,7 @@ def get_foodboxes():
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
 	server_address = server_address.value_text
-	get_address = "http://{0}/bbox/get_foodboxes/".format(server_address)
+	get_address = "http://{0}/api/bbox/get_foodboxes/".format(server_address)
 	print("GET address get_foodboxes: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()

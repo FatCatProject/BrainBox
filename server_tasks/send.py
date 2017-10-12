@@ -38,7 +38,7 @@ def put_foodboxes():
 	]
 	payload = {"foodboxes": foodboxes_to_sync}
 	print("Payload FoodBoxes: {0}".format(payload))  # TODO - Delete debug message
-	put_address = "http://{0}/bbox/put_foodbox/".format(server_address)
+	put_address = "http://{0}/api/bbox/put_foodbox/".format(server_address)
 	print("PUT address FoodBoxes: {0}".format(put_address))  # TODO - Delete debug message
 
 	now = time.time()
@@ -148,7 +148,7 @@ def put_feedinglogs():
 	]
 	payload = {"feeding_logs": feeding_logs_to_sync}
 	print("Payload FeedingLogs: {0}".format(payload))  # TODO - Delete debug message
-	put_address = "http://{0}/bbox/put_feeding_log/".format(server_address)
+	put_address = "http://{0}/api/bbox/put_feeding_log/".format(server_address)
 	print("PUT address FeedingLogs: {0}".format(put_address))  # TODO - Delete debug message
 
 	now = time.time()
@@ -237,7 +237,7 @@ def get_server_token(user_name: str, password: str):
 	my_auth = (user_name, password)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
-	get_address = "http://{0}/bbox/get_server_token/".format(server_address)
+	get_address = "http://{0}/api/bbox/get_server_token/".format(server_address)
 	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
@@ -296,7 +296,7 @@ def head_check_server_connection():
 	assert server_address is not None
 
 	server_address = server_address.value_text
-	head_address = "http://{0}/bbox/head_check_server_connection/".format(server_address)
+	head_address = "http://{0}/api/bbox/head_check_server_connection/".format(server_address)
 	print("HEAD address check_server_connection: {0}".format(head_address))  # TODO - Delete debug message
 
 	now = time.time()
