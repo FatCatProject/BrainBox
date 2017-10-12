@@ -24,14 +24,9 @@
                     </div>
                     <div class="col-xs-6 activity-desc">
                         <h4>
-                            <form name="check_connection_to_server_form" method="POST"
-                                  action="{% url "check_server_connection" %}">{% csrf_token %}
-                                <a href="{% url "check_server_connection" %}">Check server connection</a>
-                            </form>
-                            <button id="check_server_connection_button">Check server connection</button>
-                            <span id="server_connection_message">server_connection_message Place holder</span>
+                             <a id="check_server_connection_button" href="#">Check server connection</a>
+                            <span id="server_connection_message"></span>
                         </h4>
-                        <p style="color: red">Place holder - Connection response </p>
                     </div>
                     <div class="clearfix"></div>
                 </div>

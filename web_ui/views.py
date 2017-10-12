@@ -9,6 +9,8 @@ from bbox.bboxDB import BrainBoxDB
 from time import asctime, localtime
 from server_tasks.send import get_server_token
 from bbox.models import Account, SystemSetting
+import server_tasks.send as send_tasks
+import server_tasks.receive as receive_tasks
 
 
 @login_required(login_url='login')
@@ -113,12 +115,6 @@ def logout(request):
 
 
 @login_required()
-def check_server_connection(request):
-	# TODO
-	return HttpResponseRedirect(redirect_to="/web_ui/")
-
-
-@login_required()
 def sync_box(request):
 	# TODO
 	return HttpResponseRedirect(redirect_to="/web_ui/")
@@ -126,7 +122,10 @@ def sync_box(request):
 
 @login_required()
 def server_sync(request):
-	# TODO
+	send_tasks.put_foodboxes()
+	send_tasks.put_feedinglogs()
+	receive_tasks.get_cards()
+	receive_tasks.get_foodboxes()
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
 # from django.core import serializers
