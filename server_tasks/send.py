@@ -32,7 +32,8 @@ def put_foodboxes():
 	foodboxes_to_sync = [
 		{
 			"foodbox_id": foodbox.box_id,
-			"foodbox_name": foodbox.box_name
+			"foodbox_name": foodbox.box_name,
+			"current_weight": foodbox.current_weight
 		}
 		for foodbox in unsynced_foodboxes
 	]
@@ -75,37 +76,6 @@ def put_foodboxes():
 
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
-
-	# server_address = "http://{0}/bbox/put_foodbox/".format(server_address)
-	# for foodbox in unsynced_foodboxes:
-	# 	payload = {
-	# 		"foodbox_id": foodbox.box_id,
-	# 		"foodbox_name": foodbox.box_name
-	# 	}
-	# 	print("Sending FoodBox: {0}".format(payload))  # TODO - Delete debug message
-	# 	put_address = server_address + "{0}".format(foodbox.box_id)
-	# 	server_response = requests.put(url=put_address, json=payload, auth=my_auth)
-	#
-	# 	now = time.time()
-	# 	if server_response.status_code != 200:
-	# 		my_log = SystemLog(
-	# 			time_stamp=now,
-	# 			message="Failed to PUT FoodBox on server: {0}".format(payload),
-	# 			message_type="Error",
-	# 			severity=2
-	# 		)
-	# 	else:
-	# 		my_log = SystemLog(
-	# 			time_stamp=now,
-	# 			message="PUT FoodBox on server succeeded: {0}".format(payload),
-	# 			message_type="Information",
-	# 			severity=0
-	# 		)
-	# 		foodbox.synced = True
-	# 		foodbox.save()
-	# 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
-	# 	BrainBoxDB.add_system_log(myLog=my_log)
-	# 	time.sleep(1)  # No need to rush anything at the moment.
 
 	now = time.time()
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
@@ -187,43 +157,6 @@ def put_feedinglogs():
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	# server_address = "http://{0}/bbox/put_feeding_log/".format(server_address)
-	# for feeding_log in unsynced_feeding_logs:
-	# 	payload = {
-	# 		"foodbox_id": feeding_log.box_id,
-	# 		"feeding_id": feeding_log.feeding_id,
-	# 		"card_id": feeding_log.card_id.card_id,
-	# 		"open_time": str(feeding_log.open_time),
-	# 		"close_time": str(feeding_log.close_time),
-	# 		"start_weight": feeding_log.start_weight,
-	# 		"end_weight": feeding_log.end_weight
-	# 	}
-	#
-	# 	print("Sending FeedingLog: {0}".format(payload))  # TODO - Delete debug message
-	# 	put_address = server_address + "{0}".format(feeding_log.feeding_id)
-	# 	server_response = requests.put(url=put_address, json=payload, auth=my_auth)
-	#
-	# 	now = time.time()
-	# 	if server_response.status_code != 200:
-	# 		my_log = SystemLog(
-	# 			time_stamp=now,
-	# 			message="Failed to PUT FeedingLog on server: {0}".format(payload),
-	# 			message_type="Error",
-	# 			severity=2
-	# 		)
-	# 	else:
-	# 		my_log = SystemLog(
-	# 			time_stamp=now,
-	# 			message="PUT FeedingLog on server succeeded: {0}".format(payload),
-	# 			message_type="Information",
-	# 			severity=0
-	# 		)
-	# 		feeding_log.synced = True
-	# 		feeding_log.save()
-	# 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
-	# 	BrainBoxDB.add_system_log(myLog=my_log)
-	# 	time.sleep(1)  # No need to rush anything at the moment.
-
 	now = time.time()
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
@@ -265,7 +198,7 @@ def get_server_token(user_name: str, password: str):
 			server_response = json.loads(server_response.text)
 
 			new_server_token = server_response['server_token']
-			login_status = server_response['login_status']
+			login_status = True
 
 	except (json.decoder.JSONDecodeError, AttributeError) as e:
 		my_log = SystemLog(

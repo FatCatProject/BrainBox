@@ -22,14 +22,15 @@ class FoodBox(models.Model):
 	box_name = models.TextField(blank=False, db_column="box_name")
 	box_last_sync = models.DateTimeField(blank=False, db_column="box_last_synced")
 	synced = models.BooleanField(blank=False, default=False, db_column="synced")
+	current_weight = models.FloatField(blank=False, default=0, db_column="current_weight")
 
 	class Meta:
 		managed = True
 		db_table = 'food_boxes'
 
 	def __str__(self):
-		return "box_id: {0}, box_ip: {1}, box_name: {2}, box_last_sync: {3} \n".format(
-			self.box_id, self.box_ip, self.box_name, self.box_last_sync
+		return "box_id: {0}, box_ip: {1}, box_name: {2}, box_last_sync: {3}, current_weight: {4}\n".format(
+			self.box_id, self.box_ip, self.box_name, self.box_last_sync, self.current_weight
 		)
 
 
