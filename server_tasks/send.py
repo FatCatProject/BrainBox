@@ -45,7 +45,7 @@ def put_foodboxes():
 	now = time.time()
 	try:
 		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
-		if server_response.status_code != 200:
+		if server_response.status_code != 200 and server_response.status_code != 204:
 			my_log = SystemLog(
 				time_stamp=now,
 				message="Failed to PUT FoodBox on server: {0} - status_code: {1}".format(
@@ -124,7 +124,7 @@ def put_feedinglogs():
 	now = time.time()
 	try:
 		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
-		if server_response.status_code != 200:
+		if server_response.status_code != 200 and server_response.status_code != 201:
 			my_log = SystemLog(
 				time_stamp=now,
 				message="Failed to PUT FeedingLog on server: {0} - status_code: {1}".format(
@@ -236,7 +236,7 @@ def head_check_server_connection():
 	try:
 		server_response = requests.head(url=head_address)
 
-		if server_response.status_code != 200:
+		if server_response.status_code != 200 and server_response.status_code != 204:
 			my_log = SystemLog(
 				time_stamp=now,
 				message="Failed to HEAD check_server_connection from server - status_code {0}".format(
