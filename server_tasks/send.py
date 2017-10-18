@@ -163,13 +163,17 @@ def put_feedinglogs():
 
 def get_server_token(user_name: str, password: str):
 	# TODO - SSL
+	brainbox_id = BrainBoxDB.get_system_setting("BrainBox_ID")  # type: SystemSetting
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
+	assert brainbox_id is not None
 	assert server_address is not None
 
 	server_address = server_address.value_text
 	my_auth = (user_name, password)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
+	payload = {"brainbox_id": brainbox_id}
+	print("Payload server_token: {0}".format(payload))  # TODO - Delete debug message
 	get_address = "http://{0}/api/bbox/get_server_token/".format(server_address)
 	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message
 
@@ -177,7 +181,7 @@ def get_server_token(user_name: str, password: str):
 	new_server_token = None
 	login_status = False
 	try:
-		server_response = requests.get(url=get_address, auth=my_auth)
+		server_response = requests.get(url=get_address, json=payload, auth=my_auth)
 		if server_response.status_code != 200:
 			my_log = SystemLog(
 				time_stamp=now,
