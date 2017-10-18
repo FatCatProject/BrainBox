@@ -109,8 +109,8 @@ def put_feedinglogs():
 			"foodbox_id": feeding_log.box_id.box_id,
 			"feeding_id": feeding_log.feeding_id,
 			"card_id": feeding_log.card_id.card_id,
-			"open_time": str(feeding_log.open_time),
-			"close_time": str(feeding_log.close_time),
+			"open_time": feeding_log.open_time.strftime("%Y-%m-%d %H:%M:%S"),
+			"close_time": feeding_log.close_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"start_weight": feeding_log.start_weight,
 			"end_weight": feeding_log.end_weight
 		}
@@ -172,7 +172,7 @@ def get_server_token(user_name: str, password: str):
 	my_auth = (user_name, password)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
-	payload = {"brainbox_id": brainbox_id}
+	payload = {"brainbox_id": brainbox_id.value_text}
 	print("Payload server_token: {0}".format(payload))  # TODO - Delete debug message
 	get_address = "http://{0}/api/bbox/get_server_token/".format(server_address)
 	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message

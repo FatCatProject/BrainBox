@@ -40,7 +40,7 @@ def get_cards():
 			)
 			for foodbox in all_foodboxes:
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card["card_id"], box_id=foodbox.box_id,
+					card_id=card_obj, box_id=foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],
@@ -60,7 +60,7 @@ def get_cards():
 					},
 				)
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card["card_id"], box_id=tmp_foodbox.box_id,
+					card_id=card_obj, box_id=tmp_foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],
@@ -117,8 +117,8 @@ def get_foodboxes():
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 
 	server_address = server_address.value_text
-	get_address = "http://{0}/api/bbox/get_foodboxes/".format(server_address)
-	print("GET address get_foodboxes: {0}".format(get_address))  # TODO - Delete debug message
+	get_address = "http://{0}/api/bbox/get_foodbox/".format(server_address)
+	print("GET address get_foodbox: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:

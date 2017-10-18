@@ -87,7 +87,7 @@ def register(request):
 
 			if not login_status:
 				register_error_msg = "Bad login information."
-			elif new_server_token is not None:
+			elif new_server_token is None:
 				register_error_msg = "Something bad has happened, please try again later."
 			else:
 				try:
