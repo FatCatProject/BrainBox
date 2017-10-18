@@ -124,7 +124,7 @@ class SystemSetting(models.Model):
 	key_name = models.TextField(
 		primary_key=True, choices=(
 			("BrainBox_ID", "BrainBox_ID"), ("BrainBox_Name", "BrainBox_Name"), ("Sync_Interval", "Sync_interval"),
-			("Server_Last_Sync", "Server_Last_Sync")
+			("Server_Last_Sync", "Server_Last_Sync"), ("Server_Address", "Server_Address")
 		), db_column="key_name"
 	)
 	value_text = models.TextField(blank=True, null=True, db_column="value_text")
