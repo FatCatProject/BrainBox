@@ -418,8 +418,7 @@ def pullcards(request, box_id):
 
 def pullfoodbox(request, box_id):
 	try:
-		request_body = json.loads(request.body.decode("utf-8"))
-		request_current_weight = float(request_body["current_weight"])  # type: float
+		request_current_weight = float(request.GET.get("current_weight"))  # type: float
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
