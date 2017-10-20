@@ -315,7 +315,7 @@ def pushlogs(request):
 		request_body = json.loads(request.body.decode("utf-8"))
 		request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(request_body["box_id"])  # type: FoodBox
 		request_feedinglogs = request_body["feeding_logs"]
-	except (json.decoder.JSONDecodeError, AttributeError) as e:
+	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
 			message="Unexpected request body: {0}".format(e.args),
@@ -420,7 +420,7 @@ def pullfoodbox(request, box_id):
 	try:
 		request_body = json.loads(request.body.decode("utf-8"))
 		request_current_weight = float(request_body["current_weight"])  # type: float
-	except (json.decoder.JSONDecodeError, AttributeError) as e:
+	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
 			message="Unexpected request body: {0}".format(e.args),

@@ -204,7 +204,7 @@ def get_server_token(user_name: str, password: str):
 			new_server_token = server_response['server_token']
 			login_status = True
 
-	except (json.decoder.JSONDecodeError, AttributeError) as e:
+	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
 			message="Server returned unexpected response: {0}".format(e.args),
