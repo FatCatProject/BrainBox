@@ -11,6 +11,7 @@ from server_tasks.send import get_server_token
 from bbox.models import Account, SystemSetting
 import server_tasks.send as send_tasks
 import server_tasks.receive as receive_tasks
+import datetime
 
 
 @login_required(login_url='login')
@@ -18,6 +19,10 @@ def index(request):
 	user = auth.get_user(request=request)
 
 	food_boxes = BrainBoxDB.get_all_foodBoxes()
+	for foodbox in food_boxes:
+		foodbox.box_last_sync = foodbox.box_last_sync.replace(
+			tzinfo=datetime.timezone(offset=datetime.timedelta(hours=3))
+		)
 
 	server_last_sync = BrainBoxDB.get_system_setting("Server_Last_Sync")
 

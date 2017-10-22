@@ -84,7 +84,7 @@ def get_cards():
 			severity=0
 		)
 
-	except (json.decoder.JSONDecodeError, AttributeError) as e:
+	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
 			message="Server returned unexpected response: {0}".format(e.args),
@@ -147,7 +147,7 @@ def get_foodboxes():
 			message_type="Information",
 			severity=0
 		)
-	except (json.decoder.JSONDecodeError, AttributeError) as e:
+	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
 			message="Server returned unexpected response: {0}".format(e.args),
