@@ -87,14 +87,18 @@ def get_cards():
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET cards from server - Exception: {0}".format(e.args),
+			message="Failed to GET cards from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -150,14 +154,18 @@ def get_foodboxes():
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET foodboxes from server - Exception: {0}".format(e.args),
+			message="Failed to GET foodboxes from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)

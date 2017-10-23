@@ -69,7 +69,9 @@ def put_foodboxes():
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to PUT FoodBox on server - Exception: {0}".format(e.args),
+			message="Failed to PUT FoodBox on server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -149,7 +151,9 @@ def put_feedinglogs():
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to PUT FeedingLog on server - Exception: {0}".format(e.args),
+			message="Failed to PUT FeedingLog on server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -207,14 +211,18 @@ def get_server_token(user_name: str, password: str):
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET server_token from server - Exception: {0}".format(e.args),
+			message="Failed to GET server_token from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -260,7 +268,9 @@ def head_check_server_connection():
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to HEAD check_server_connection from server - Exception: {0}".format(e.args),
+			message="Failed to HEAD check_server_connection from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)

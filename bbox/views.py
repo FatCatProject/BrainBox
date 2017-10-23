@@ -318,7 +318,7 @@ def pushlogs(request):
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
-			message="Unexpected request body: {0}".format(e.args),
+			message="Unexpected request body: {0}".format(str(e.args)),
 			message_type="Fatal",
 			severity=2
 		)
@@ -422,7 +422,7 @@ def pullfoodbox(request, box_id):
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
-			message="Unexpected request body: {0}".format(e.args),
+			message="Unexpected request body: {0}".format(str(e.args)),
 			message_type="Fatal",
 			severity=2
 		)
