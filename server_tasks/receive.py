@@ -40,7 +40,7 @@ def get_cards():
 			)
 			for foodbox in all_foodboxes:
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card_obj, box_id=foodbox,
+					card=card_obj, foodbox=foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],
@@ -60,7 +60,7 @@ def get_cards():
 					},
 				)
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card_obj, box_id=tmp_foodbox,
+					card=card_obj, foodbox=tmp_foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],

@@ -108,9 +108,9 @@ def put_feedinglogs():
 
 	feeding_logs_to_sync = [
 		{
-			"foodbox_id": feeding_log.box_id.box_id,
+			"foodbox_id": feeding_log.foodbox.box_id,
 			"feeding_id": feeding_log.feeding_id,
-			"card_id": feeding_log.card_id.card_id,
+			"card_id": feeding_log.card.card_id,
 			"open_time": feeding_log.open_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"close_time": feeding_log.close_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"start_weight": feeding_log.start_weight,
