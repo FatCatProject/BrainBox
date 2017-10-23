@@ -57,7 +57,7 @@ class BrainBoxDB:
 
 	@staticmethod
 	def get_feeding_logs_by_box_id(boxId):
-		return tuple(FeedingLog.objects.filter(box_id=boxId))
+		return tuple(FeedingLog.objects.filter(foodbox=boxId))
 
 	@staticmethod
 	def add_feeding_log(myLog: FeedingLog):
@@ -83,9 +83,9 @@ class BrainBoxDB:
 		# 	synced=myLog.synced
 		# )
 		FeedingLog.objects.create(
-			box_id=myLog.box_id,
+			foodbox=myLog.foodbox,
 			feeding_id=myLog.feeding_id,
-			card_id=myLog.card_id,
+			card=myLog.card,
 			open_time=myLog.open_time,
 			close_time=myLog.close_time,
 			start_weight=myLog.start_weight,
@@ -188,11 +188,19 @@ class BrainBoxDB:
 		return tuple(FoodBox.objects.all())
 
 	@staticmethod
-	def get_unsynced_foodBoxes():
+	def get_unsynced_foodBoxes_to_foodbox():
 		"""
-		Returns a tuple of unsynced food_boxes
+		Returns a tuple of unsynced_to_foodbox food_boxes
 		"""
-		queryset = FoodBox.objects.filter(synced=False)
+		queryset = FoodBox.objects.filter(synced_to_foodbox=False)
+		return tuple([entry for entry in queryset])
+
+	@staticmethod
+	def get_unsynced_foodBoxes_to_server():
+		"""
+		Returns a tuple of unsynced_to_server food_boxes
+		"""
+		queryset = FoodBox.objects.filter(synced_to_server=False)
 		return tuple([entry for entry in queryset])
 
 	@staticmethod
@@ -225,23 +233,23 @@ class BrainBoxDB:
 	@staticmethod
 	def get_boxes_for_card(card_id: str):
 		#returns tupple of foodBoxes
-		queryset = CardOpen.objects.filter(card_id=card_id)
-		boxes_ids = [entry.box_id for entry in queryset]
+		queryset = CardOpen.objects.filter(card=card_id)
+		boxes_ids = [entry.foodbox.box_id for entry in queryset]
 		return tuple(boxes_ids)
 
 	@staticmethod
 	def get_cards_for_box(box_id: str, active_only: bool = True):
 		#returns tupple of cards
 		if active_only:
-			queryset = CardOpen.objects.filter(box_id=box_id, active=True)
+			queryset = CardOpen.objects.filter(foodbox=box_id, active=True)
 		else:
-			queryset = CardOpen.objects.filter(box_id=box_id)
-		cards = [entry.card_id for entry in queryset]
+			queryset = CardOpen.objects.filter(foodbox=box_id)
+		cards = [entry.card for entry in queryset]
 		return tuple(cards)
 
 	@staticmethod
 	def get_unsynced_cards_for_box(box_id: str):
-		queryset = CardOpen.objects.filter(box_id=box_id, synced=False)
+		queryset = CardOpen.objects.filter(foodbox=box_id, synced=False)
 		return tuple([entry for entry in queryset])
 
 	@staticmethod
@@ -258,19 +266,21 @@ class BrainBoxDB:
 
 	@staticmethod
 	def set_card_active_for_box(card_id:str, box_id:str):
-		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=True)
+		CardOpen.objects.filter(card=card_id, foodbox=box_id).update(active=True)
 
 	@staticmethod
 	def set_card_not_active_for_box(card_id: str, box_id: str):
-		CardOpen.objects.filter(card_id=card_id, box_id=box_id).update(active=False)
+		CardOpen.objects.filter(card=card_id, foodbox=box_id).update(active=False)
 
 	@staticmethod
 	def associate_card_with_box(card_id: str, box_id: str):
 		#add active card with box to CardOpen table
-		CardOpen.objects.create(card_id=card_id, box_id=box_id , active=True, changed_date=datetime.datetime.now())
+		CardOpen.objects.create(
+			card=card_id, foodbox=box_id, active=True,
+			changed_date=datetime.datetime.now()
+		)
 
 	@staticmethod
 	def delete_card(card_id:str):
 		Card.objects.filter(card_id=card_id).delete()
 	### END of Cards functions ###
-

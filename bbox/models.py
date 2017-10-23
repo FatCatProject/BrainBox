@@ -21,7 +21,8 @@ class FoodBox(models.Model):
 	box_ip = models.TextField(blank=False, db_column="box_ip")
 	box_name = models.TextField(blank=False, db_column="box_name")
 	box_last_sync = models.DateTimeField(blank=False, db_column="box_last_synced")
-	synced = models.BooleanField(blank=False, default=False, db_column="synced")
+	synced_to_foodbox = models.BooleanField(blank=False, default=False, db_column="synced_to_foodbox")
+	synced_to_server = models.BooleanField(blank=False, default=False, db_column="synced_to_server")
 	current_weight = models.FloatField(blank=False, default=0, db_column="current_weight")
 
 	class Meta:
@@ -49,13 +50,13 @@ class Card(models.Model):
 
 class CardOpen(models.Model):
 	rowid = models.AutoField(primary_key=True, db_column="rowid")
-	card_id = models.ForeignKey(
+	card = models.ForeignKey(
 		Card, blank=False, db_column="card_id",
 		on_delete=models.CASCADE
-	)  # fixme - Needs to be renamed to "card"
-	box_id = models.ForeignKey(
+	)
+	foodbox = models.ForeignKey(
 		FoodBox, blank=False, db_column="box_id"
-	)  # fixme - Needs to be renamed to "foodbox"
+	)
 	active = models.BooleanField(default=True, blank=False, db_column="active")
 	changed_date = models.DateTimeField(blank=False, db_column="changed_date")
 	synced = models.BooleanField(blank=False, default=False, db_column="synced")
@@ -66,19 +67,19 @@ class CardOpen(models.Model):
 
 	def __str__(self):
 		return "rowid: {0}, card_id: {1}, box_id: {2}, active: {3}, changed_date: {4} \n".format(
-			self.rowid, self.card_id, self.box_id, self.active, self.changed_date
+			self.rowid, self.card.card_id, self.foodbox.box_id, self.active, self.changed_date
 		)
 
 
 class FeedingLog(models.Model):
 	rowid = models.AutoField(primary_key=True, db_column="rowid")
-	box_id = models.ForeignKey(
+	foodbox = models.ForeignKey(
 		FoodBox, blank=False, db_column="box_id"
-	)  # fixme - Needs to be renamed to "foodbox"
+	)
 	feeding_id = models.TextField(blank=False, db_column="feeding_id")
-	card_id = models.ForeignKey(
+	card = models.ForeignKey(
 		Card, blank=False, db_column="card_id"
-	)  # fixme - Needs to be renamed to "card"
+	)
 	open_time = models.DateTimeField(blank=False, db_column="open_time")
 	close_time = models.DateTimeField(blank=False, db_column="close_time")
 	start_weight = models.FloatField(blank=False, db_column="start_weight")
@@ -91,13 +92,18 @@ class FeedingLog(models.Model):
 		unique_together = ("box_id", "feeding_id")
 
 	def __str__(self):
-		return \
-			"rowid: {0} ,box_id: {1}, feeding uuid: {2},  card: {3},  open time: {4}, close time: {5}, " \
-			"start weight: {6}, end weight: {7}, synced: {8} \n".format(
-				self.rowid, self.box_id, self.feeding_id, self.card_id, self.open_time, self.close_time,
-				self.start_weight,
-				self.end_weight, self.synced
-			)
+		return str.join(
+			" ",
+			[
+				"rowid: {0} ,box_id: {1}, feeding uuid: {2}, card: {3},",
+				"open time: {4}, close time: {5}, start weight: {6},",
+				"end weight: {7}, synced: {8}"
+			]
+		).format(
+			self.rowid, self.foodbox.box_id, self.feeding_id, self.card.card_id,
+			self.open_time, self.close_time, self.start_weight,
+			self.end_weight, self.synced
+		)
 
 
 class SystemLog(models.Model):

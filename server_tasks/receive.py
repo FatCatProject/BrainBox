@@ -40,7 +40,7 @@ def get_cards():
 			)
 			for foodbox in all_foodboxes:
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card_obj, box_id=foodbox,
+					card=card_obj, foodbox=foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],
@@ -60,7 +60,7 @@ def get_cards():
 					},
 				)
 				card_open_obj, card_open_created = CardOpen.objects.update_or_create(
-					card_id=card_obj, box_id=tmp_foodbox,
+					card=card_obj, foodbox=tmp_foodbox,
 					defaults={
 						"active": card["active"],
 						"changed_date": card["update_time"],
@@ -87,14 +87,18 @@ def get_cards():
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET cards from server - Exception: {0}".format(e.args),
+			message="Failed to GET cards from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -129,7 +133,8 @@ def get_foodboxes():
 			try:
 				tmp_foodbox = FoodBox.objects.get(box_id=foodbox["foodbox_id"])  # type: FoodBox
 				tmp_foodbox.box_name = foodbox["foodbox_name"]
-				tmp_foodbox.synced = False
+				tmp_foodbox.synced_to_foodbox=False
+				tmp_foodbox.synced_to_server=True
 				tmp_foodbox.save()
 			except FoodBox.DoesNotExist:
 				my_log = SystemLog(
@@ -150,14 +155,18 @@ def get_foodboxes():
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET foodboxes from server - Exception: {0}".format(e.args),
+			message="Failed to GET foodboxes from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)

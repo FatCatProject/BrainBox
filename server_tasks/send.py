@@ -16,7 +16,7 @@ def put_foodboxes():
 	server_address = server_address.value_text
 	my_auth = (my_account.user_name, my_account.server_token)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
-	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes()  # type: tuple[FoodBox]
+	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes_to_server()  # type: tuple[FoodBox]
 	if not unsynced_foodboxes:
 		now = time.time()
 		my_log = SystemLog(
@@ -64,12 +64,14 @@ def put_foodboxes():
 			)
 
 			for foodbox in unsynced_foodboxes:
-				foodbox.synced = True
+				tmp_foodbox.synced_to_server=True
 				foodbox.save()
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to PUT FoodBox on server - Exception: {0}".format(e.args),
+			message="Failed to PUT FoodBox on server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -106,9 +108,9 @@ def put_feedinglogs():
 
 	feeding_logs_to_sync = [
 		{
-			"foodbox_id": feeding_log.box_id.box_id,
+			"foodbox_id": feeding_log.foodbox.box_id,
 			"feeding_id": feeding_log.feeding_id,
-			"card_id": feeding_log.card_id.card_id,
+			"card_id": feeding_log.card.card_id,
 			"open_time": feeding_log.open_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"close_time": feeding_log.close_time.strftime("%Y-%m-%d %H:%M:%S"),
 			"start_weight": feeding_log.start_weight,
@@ -149,7 +151,9 @@ def put_feedinglogs():
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to PUT FeedingLog on server - Exception: {0}".format(e.args),
+			message="Failed to PUT FeedingLog on server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -207,14 +211,18 @@ def get_server_token(user_name: str, password: str):
 	except (ValueError, AttributeError) as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Server returned unexpected response: {0}".format(e.args),
+			message="Server returned unexpected response: {0}".format(
+				str(e.args)
+			),
 			message_type="Fatal",
 			severity=2
 		)
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to GET server_token from server - Exception: {0}".format(e.args),
+			message="Failed to GET server_token from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
@@ -260,7 +268,9 @@ def head_check_server_connection():
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
-			message="Failed to HEAD check_server_connection from server - Exception: {0}".format(e.args),
+			message="Failed to HEAD check_server_connection from server - Exception: {0}".format(
+				str(e.args)
+			),
 			message_type="Error",
 			severity=2
 		)
