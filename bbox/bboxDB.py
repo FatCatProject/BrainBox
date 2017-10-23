@@ -188,11 +188,19 @@ class BrainBoxDB:
 		return tuple(FoodBox.objects.all())
 
 	@staticmethod
-	def get_unsynced_foodBoxes():
+	def get_unsynced_foodBoxes_to_foodbox():
 		"""
-		Returns a tuple of unsynced food_boxes
+		Returns a tuple of unsynced_to_foodbox food_boxes
 		"""
-		queryset = FoodBox.objects.filter(synced=False)
+		queryset = FoodBox.objects.filter(synced_to_foodbox=False)
+		return tuple([entry for entry in queryset])
+
+	@staticmethod
+	def get_unsynced_foodBoxes_to_server():
+		"""
+		Returns a tuple of unsynced_to_server food_boxes
+		"""
+		queryset = FoodBox.objects.filter(synced_to_server=False)
 		return tuple([entry for entry in queryset])
 
 	@staticmethod

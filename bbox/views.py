@@ -441,12 +441,15 @@ def pullfoodbox(request, box_id):
 	if not request_foodbox:
 		request_foodbox = FoodBox.objects.create(
 			box_id=box_id, box_ip=request_box_ip, box_name="FoodBox_{}".format(box_id), box_last_sync=now_datetime,
-			current_weight=request_current_weight
+			current_weight=request_current_weight, synced_to_foodbox=True,
+			synced_to_server=False
 		)
 	else:
 		request_foodbox.box_ip = request_box_ip
 		request_foodbox.box_last_sync = now_datetime
 		request_foodbox.current_weight = request_current_weight
+		request_foodbox.synced_to_foodbox=True
+		request_foodbox.synced_to_server=False
 	request_foodbox.save()
 
 	response_json = json.dumps({"foodbox_name": request_foodbox.box_name})

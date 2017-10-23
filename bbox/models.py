@@ -21,7 +21,8 @@ class FoodBox(models.Model):
 	box_ip = models.TextField(blank=False, db_column="box_ip")
 	box_name = models.TextField(blank=False, db_column="box_name")
 	box_last_sync = models.DateTimeField(blank=False, db_column="box_last_synced")
-	synced = models.BooleanField(blank=False, default=False, db_column="synced")
+	synced_to_foodbox = models.BooleanField(blank=False, default=False, db_column="synced_to_foodbox")
+	synced_to_server = models.BooleanField(blank=False, default=False, db_column="synced_to_server")
 	current_weight = models.FloatField(blank=False, default=0, db_column="current_weight")
 
 	class Meta:

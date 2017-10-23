@@ -133,7 +133,8 @@ def get_foodboxes():
 			try:
 				tmp_foodbox = FoodBox.objects.get(box_id=foodbox["foodbox_id"])  # type: FoodBox
 				tmp_foodbox.box_name = foodbox["foodbox_name"]
-				tmp_foodbox.synced = False
+				tmp_foodbox.synced_to_foodbox=False
+				tmp_foodbox.synced_to_server=True
 				tmp_foodbox.save()
 			except FoodBox.DoesNotExist:
 				my_log = SystemLog(

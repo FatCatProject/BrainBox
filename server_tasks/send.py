@@ -16,7 +16,7 @@ def put_foodboxes():
 	server_address = server_address.value_text
 	my_auth = (my_account.user_name, my_account.server_token)
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
-	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes()  # type: tuple[FoodBox]
+	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes_to_server()  # type: tuple[FoodBox]
 	if not unsynced_foodboxes:
 		now = time.time()
 		my_log = SystemLog(
@@ -64,7 +64,7 @@ def put_foodboxes():
 			)
 
 			for foodbox in unsynced_foodboxes:
-				foodbox.synced = True
+				tmp_foodbox.synced_to_server=True
 				foodbox.save()
 	except Exception as e:
 		my_log = SystemLog(
