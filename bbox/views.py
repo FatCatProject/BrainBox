@@ -47,8 +47,6 @@ def pushlogs(request):
 			foodbox=request_foodbox, feeding_id=tmp_feeding_id, card=tmp_card, open_time=tmp_open_time,
 			close_time=tmp_close_time, start_weight=tmp_start_weight, end_weight=tmp_end_weight, synced=False
 		)
-		tmp_feedinglog.open_time = tmp_feedinglog.open_time + datetime.timedelta(hours=3)
-		tmp_feedinglog.close_time = tmp_feedinglog.close_time + datetime.timedelta(hours=3)
 		BrainBoxDB.add_feeding_log(tmp_feedinglog)
 		confirmed_ids.append(tmp_feeding_id)
 

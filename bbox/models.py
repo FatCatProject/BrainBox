@@ -89,7 +89,7 @@ class FeedingLog(models.Model):
 	class Meta:
 		managed = True
 		db_table = 'feeding_logs'
-		unique_together = ("box_id", "feeding_id")
+		unique_together = ("foodbox", "feeding_id")
 
 	def __str__(self):
 		return str.join(
