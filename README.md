@@ -6,6 +6,7 @@ Written in Python3
 
 Dependencies:
 - Django (pip3)
+- django-cron (pip3)
 - netifaces (pip3)
 - requests (pip3)
 - zeroconf (pip3)
