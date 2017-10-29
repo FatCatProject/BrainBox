@@ -27,4 +27,9 @@ urlpatterns = [
 		views.external_trigger_check_server_connection,
 		name='external_trigger_check_server_connection'
 	),
+	url(
+		r'^external_trigger_server_sync$',
+		views.external_trigger_server_sync,
+		name='external_trigger_server_sync'
+	),
 ]

@@ -32,3 +32,11 @@ def external_trigger_get_foodboxes(request):
 def external_trigger_check_server_connection(request):
 	connection_status = send_tasks.head_check_server_connection()
 	return JsonResponse({"connection_status": connection_status})
+
+def external_trigger_server_sync(request):
+	send_tasks.put_foodboxes()
+	send_tasks.put_feedinglogs()
+	receive_tasks.get_cards()
+	receive_tasks.get_foodboxes()
+	return HttpResponse(status=204)
+
