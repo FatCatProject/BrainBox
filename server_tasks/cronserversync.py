@@ -3,7 +3,7 @@ import requests
 
 
 class CronServerSync(CronJobBase):
-	RUN_EVERY_MINS = 1
+	RUN_EVERY_MINS = 10
 	schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
 	code = "server_tasks.cron_server_sync"
 
