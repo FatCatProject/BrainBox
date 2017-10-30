@@ -13,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 import datetime
 import json
 import requests
+import server_tasks.receive as receive_tasks
+import server_tasks.send as send_tasks
 import time
 
 
@@ -42,18 +44,18 @@ def pushlogs(request):
 			box_id=request_foodbox.box_id, active_only=False
 		)
 	}
-
+	print("asdddd {}".format(request_foodbox.box_id))
 	confirmed_ids = []
 	for log in request_feedinglogs:
 		tmp_feeding_id = log["feeding_id"]
-		tmp_card = box_cards[log["card_id"]]
+		tmp_card_id = box_cards[log["card_id"]]
 		tmp_open_time = log["open_time"]
 		tmp_close_time = log["close_time"]
 		tmp_start_weight = log["start_weight"]
 		tmp_end_weight = log["end_weight"]
 		tmp_feedinglog = FeedingLog(
-			box_id=request_foodbox, feeding_id=tmp_feeding_id,
-			card_id=tmp_card_id, open_time=tmp_open_time,
+			foodbox=request_foodbox, feeding_id=tmp_feeding_id,
+			card=tmp_card_id, open_time=tmp_open_time,
 			close_time=tmp_close_time, start_weight=tmp_start_weight,
 			end_weight=tmp_end_weight, synced=False
 		)
