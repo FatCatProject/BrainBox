@@ -22,5 +22,5 @@ urlpatterns = [
 	url(r'^bbox/', include('bbox.urls')),
 	url(r'^web_ui/', include('web_ui.urls')),
 	url(r'^$', web_ui_index),
-	url(r'^server_tasks/', include('server_tasks.urls')),  # TODO - Delete this debug url
+	url(r'^server_tasks/', include('server_tasks.urls')),
 ]
