@@ -44,7 +44,7 @@ def pushlogs(request):
 			box_id=request_foodbox.box_id, active_only=False
 		)
 	}
-	print("asdddd {}".format(request_foodbox.box_id))
+
 	confirmed_ids = []
 	for log in request_feedinglogs:
 		tmp_feeding_id = log["feeding_id"]
