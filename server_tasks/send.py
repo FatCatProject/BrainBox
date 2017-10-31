@@ -23,7 +23,7 @@ def put_foodboxes():
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes_to_server()  # type: tuple[FoodBox]
 	if not unsynced_foodboxes:
-		now = datetime.utcnow()
+		now = time.time()
 		my_log = SystemLog(
 			time_stamp=now,
 			message="No FoodBoxes to PUT on server",
@@ -47,7 +47,7 @@ def put_foodboxes():
 	put_address = "http://{0}/api/bbox/put_foodbox/".format(server_address)
 	print("PUT address FoodBoxes: {0}".format(put_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	try:
 		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
 		if server_response.status_code != 200 and server_response.status_code != 204:
@@ -84,7 +84,7 @@ def put_foodboxes():
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	now = datetime.utcnow()
+	now = datetime.now().replace(microsecond=0)
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 
@@ -100,7 +100,7 @@ def put_feedinglogs():
 	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
 	unsynced_feeding_logs = BrainBoxDB.get_not_synced_feeding_logs()  # type: tuple[FeedingLog]
 	if not unsynced_feeding_logs:
-		now = datetime.utcnow()
+		now = time.time()
 		my_log = SystemLog(
 			time_stamp=now,
 			message="No FeedingLogs to PUT on server",
@@ -128,7 +128,7 @@ def put_feedinglogs():
 	put_address = "http://{0}/api/bbox/put_feeding_log/".format(server_address)
 	print("PUT address FeedingLogs: {0}".format(put_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	try:
 		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
 		if server_response.status_code != 200 and server_response.status_code != 201:
@@ -168,7 +168,7 @@ def put_feedinglogs():
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	now = datetime.utcnow()
+	now = datetime.now().replace(microsecond=0)
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 
@@ -188,7 +188,7 @@ def get_server_token(user_name: str, password: str):
 	get_address = "http://{0}/api/bbox/get_server_token/".format(server_address)
 	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	new_server_token = None
 	login_status = False
 	try:
@@ -237,7 +237,7 @@ def get_server_token(user_name: str, password: str):
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	now = datetime.utcnow()
+	now = datetime.now().replace(microsecond=0)
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 	return new_server_token, login_status
@@ -253,7 +253,7 @@ def head_check_server_connection():
 	)
 	print("HEAD address check_server_connection: {0}".format(head_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	try:
 		server_response = requests.head(url=head_address)
 

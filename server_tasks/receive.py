@@ -25,7 +25,7 @@ def get_cards():
 	get_address = "http://{0}/api/bbox/get_card/".format(server_address)
 	print("GET address get_card: {0}".format(get_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	try:
 		server_response = requests.get(url=get_address, auth=my_auth)
 		cards_response = json.loads(server_response.text)
@@ -114,7 +114,7 @@ def get_cards():
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	now = datetime.utcnow()
+	now = datetime.now().replace(microsecond=0)
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 
@@ -132,7 +132,7 @@ def get_foodboxes():
 	get_address = "http://{0}/api/bbox/get_foodbox/".format(server_address)
 	print("GET address get_foodbox: {0}".format(get_address))  # TODO - Delete debug message
 
-	now = datetime.utcnow()
+	now = time.time()
 	try:
 		server_response = requests.get(url=get_address, auth=my_auth)
 		foodboxes_response = json.loads(server_response.text)
