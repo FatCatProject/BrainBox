@@ -1,8 +1,14 @@
+from bbox.bboxDB import BrainBoxDB
+from bbox.models import Account
+from bbox.models import Card
+from bbox.models import CardOpen
+from bbox.models import FoodBox
+from bbox.models import SystemLog
+from bbox.models import SystemSetting
+from datetime import datetime
 import json
 import requests
 import time
-from bbox.models import Account, SystemSetting, SystemLog, Card, CardOpen, FoodBox
-from bbox.bboxDB import BrainBoxDB
 
 
 def get_cards():
@@ -19,7 +25,7 @@ def get_cards():
 	get_address = "http://{0}/api/bbox/get_card/".format(server_address)
 	print("GET address get_card: {0}".format(get_address))  # TODO - Delete debug message
 
-	now = time.time()
+	now = datetime.utcnow()
 	try:
 		server_response = requests.get(url=get_address, auth=my_auth)
 		cards_response = json.loads(server_response.text)
@@ -70,7 +76,9 @@ def get_cards():
 			except FoodBox.DoesNotExist:
 				my_log = SystemLog(
 					time_stamp=now,
-					message="Server returned unexpected FoodBox: {0}".format(card["foodbox_id"]),
+					message="Server returned unexpected FoodBox: {0}".format(
+						card["foodbox_id"]
+					),
 					message_type="Fatal",
 					severity=1
 				)
@@ -106,7 +114,7 @@ def get_cards():
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
 
-	now = time.time()
+	now = datetime.utcnow()
 	BrainBoxDB.set_system_setting("Server_Last_Sync", str(now))
 
 
@@ -124,22 +132,26 @@ def get_foodboxes():
 	get_address = "http://{0}/api/bbox/get_foodbox/".format(server_address)
 	print("GET address get_foodbox: {0}".format(get_address))  # TODO - Delete debug message
 
-	now = time.time()
+	now = datetime.utcnow()
 	try:
 		server_response = requests.get(url=get_address, auth=my_auth)
 		foodboxes_response = json.loads(server_response.text)
 
 		for foodbox in foodboxes_response['foodboxes']:
 			try:
-				tmp_foodbox = FoodBox.objects.get(box_id=foodbox["foodbox_id"])  # type: FoodBox
+				tmp_foodbox = FoodBox.objects.get(
+					box_id=foodbox["foodbox_id"]
+				)  # type: FoodBox
 				tmp_foodbox.box_name = foodbox["foodbox_name"]
-				tmp_foodbox.synced_to_foodbox=False
-				tmp_foodbox.synced_to_server=True
+				tmp_foodbox.synced_to_foodbox = False
+				tmp_foodbox.synced_to_server = True
 				tmp_foodbox.save()
 			except FoodBox.DoesNotExist:
 				my_log = SystemLog(
 					time_stamp=now,
-					message="Server returned unexpected FoodBox: {0}".format(foodbox["foodbox_id"]),
+					message="Server returned unexpected FoodBox: {0}".format(
+						foodbox["foodbox_id"]
+					),
 					message_type="Fatal",
 					severity=1
 				)
@@ -173,3 +185,4 @@ def get_foodboxes():
 
 	print("Writing SystemLog: {0}".format(my_log))  # TODO - Delete debug message
 	BrainBoxDB.add_system_log(myLog=my_log)
+
