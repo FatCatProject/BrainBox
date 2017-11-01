@@ -7,6 +7,7 @@ from bbox.models import SystemLog
 from bbox.models import SystemSetting
 from datetime import datetime
 import json
+import pytz
 import requests
 import time
 
@@ -68,9 +69,9 @@ def put_foodboxes():
 				severity=0
 			)
 
-			for foodbox in unsynced_foodboxes:
+			for tmp_foodbox in unsynced_foodboxes:
 				tmp_foodbox.synced_to_server = True
-				foodbox.save()
+				tmp_foodbox.save()
 	except Exception as e:
 		my_log = SystemLog(
 			time_stamp=now,
@@ -116,8 +117,20 @@ def put_feedinglogs():
 			"foodbox_id": feeding_log.foodbox.box_id,
 			"feeding_id": feeding_log.feeding_id,
 			"card_id": feeding_log.card.card_id,
-			"open_time": feeding_log.open_time.strftime("%Y-%m-%d %H:%M:%S"),
-			"close_time": feeding_log.close_time.strftime("%Y-%m-%d %H:%M:%S"),
+			"open_time": feeding_log.open_time.replace(
+				tzinfo=pytz.timezone("UTC")
+			).astimezone(
+				pytz.timezone("Asia/Jerusalem")
+			).strftime(
+				"%Y-%m-%d %H:%M:%S"
+			),
+			"close_time": feeding_log.close_time.replace(
+				tzinfo=pytz.timezone("UTC")
+			).astimezone(
+					pytz.timezone("Asia/Jerusalem")
+			).strftime(
+				"%Y-%m-%d %H:%M:%S"
+			),
 			"start_weight": feeding_log.start_weight,
 			"end_weight": feeding_log.end_weight
 		}
