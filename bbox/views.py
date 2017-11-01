@@ -5,13 +5,14 @@ from .models import FoodBox
 from .models import SystemLog
 from .models import SystemSetting
 from bbox.bboxDB import BrainBoxDB
+from datetime import datetime
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-import datetime
 import json
+import pytz
 import requests
 import server_tasks.receive as receive_tasks
 import server_tasks.send as send_tasks
@@ -41,7 +42,8 @@ def pushlogs(request):
 
 	box_cards = {
 		card.card_id: card for card in BrainBoxDB.get_cards_for_box(
-			box_id=request_foodbox.box_id, active_only=False
+			box_id=request_foodbox.box_id,
+			active_only=False
 		)
 	}
 
@@ -54,26 +56,28 @@ def pushlogs(request):
 		tmp_start_weight = log["start_weight"]
 		tmp_end_weight = log["end_weight"]
 		tmp_feedinglog = FeedingLog(
-			foodbox=request_foodbox, feeding_id=tmp_feeding_id,
-			card=tmp_card_id, open_time=tmp_open_time,
-			close_time=tmp_close_time, start_weight=tmp_start_weight,
-			end_weight=tmp_end_weight, synced=False
+			foodbox=request_foodbox,
+			feeding_id=tmp_feeding_id,
+			card=tmp_card_id,
+			open_time=tmp_open_time,
+			close_time=tmp_close_time,
+			start_weight=tmp_start_weight,
+			end_weight=tmp_end_weight,
+			synced=False
 		)
 		BrainBoxDB.add_feeding_log(tmp_feedinglog)
 		confirmed_ids.append(tmp_feeding_id)
 
 	request_foodbox.box_ip = request.META["REMOTE_ADDR"]
-	now = time.localtime()
-	now_datetime = datetime.datetime(
-		now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec,
-		tzinfo=datetime.timezone(offset=datetime.timedelta())
-	)
+	now_datetime = datetime.now().replace(microsecond=0)
 	request_foodbox.box_last_sync = now_datetime
 	request_foodbox.save()
 
 	response_json = json.dumps({"confirm_ids": confirmed_ids})
 	response = HttpResponse(
-		content=response_json, content_type="application/json", status=200
+		content=response_json,
+		content_type="application/json",
+		status=200
 	)
 
 	my_log = SystemLog(
@@ -128,11 +132,7 @@ def pullcards(request, box_id):
 	]
 
 	request_foodbox.box_ip = request.META["REMOTE_ADDR"]
-	now = time.localtime()
-	now_datetime = datetime.datetime(
-		now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec,
-		tzinfo=datetime.timezone(offset=datetime.timedelta())
-	)
+	now_datetime = datetime.now().replace(microsecond=0)
 	request_foodbox.box_last_sync = now_datetime
 	request_foodbox.save()
 
@@ -142,12 +142,15 @@ def pullcards(request, box_id):
 
 	response_json = json.dumps(
 		{
-			"admin_cards": admin_cards_list, "modified_cards": [],
+			"admin_cards": admin_cards_list,
+			"modified_cards": [],
 			"new_cards": cards_to_sync_list
 		}
 	)
 	response = HttpResponse(
-		content=response_json, content_type="application/json", status=200
+		content=response_json,
+		content_type="application/json",
+		status=200
 	)
 	my_log = SystemLog(
 		time_stamp=time.time(),
@@ -176,29 +179,29 @@ def pullfoodbox(request, box_id):
 
 	request_foodbox = BrainBoxDB.get_foodBox_by_foodBox_id(box_id)  # type: FoodBox
 	request_box_ip = request.META["REMOTE_ADDR"]
-	now = time.localtime()
-	now_datetime = datetime.datetime(
-		now.tm_year, now.tm_mon, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec,
-		tzinfo=datetime.timezone(offset=datetime.timedelta())
-	)
+	now_datetime = datetime.now().replace(microsecond=0)
 
 	if not request_foodbox:
 		request_foodbox = FoodBox.objects.create(
-			box_id=box_id, box_ip=request_box_ip,
-			box_name="FoodBox_{}".format(box_id), box_last_sync=now_datetime,
+			box_id=box_id,
+			box_ip=request_box_ip,
+			box_name="FoodBox_{}".format(box_id),
+			box_last_sync=now_datetime,
 			current_weight=request_current_weight
 		)
 	else:
 		request_foodbox.box_ip = request_box_ip
 		request_foodbox.box_last_sync = now_datetime
 		request_foodbox.current_weight = request_current_weight
-		request_foodbox.synced_to_foodbox=True
-		request_foodbox.synced_to_server=False
+		request_foodbox.synced_to_foodbox = True
+		request_foodbox.synced_to_server = False
 	request_foodbox.save()
 
 	response_json = json.dumps({"foodbox_name": request_foodbox.box_name})
 	response = HttpResponse(
-		content=response_json, content_type="application/json", status=200
+		content=response_json,
+		content_type="application/json",
+		status=200
 	)
 	my_log = SystemLog(
 		time_stamp=time.time(),

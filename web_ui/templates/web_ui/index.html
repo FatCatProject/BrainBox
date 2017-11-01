@@ -1,7 +1,7 @@
 {% extends "web_ui/site_template.html" %}
 {% load static %}
 {% block  title %}
-    <title>Index title place holder</title>
+    <title>Index page</title>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +20,7 @@
                                 <a href="{% url "server_sync" %}">Sync now</a>
                             </form>
                         </h4>
-                        <p>Last sync with server: {{ server_last_sync }}</p>
+						<p>Last sync with server:<br/>{{ server_last_sync }}</p>
                     </div>
                     <div class="col-xs-6 activity-desc">
                         <h4>
@@ -37,16 +37,14 @@
                             <form name="box_form" method="POST" action="{% url "sync_box" %}">{% csrf_token %}
                                 <div class="online-top">
                                     <div class="top-at">
-                                        <img width="70px" class="" src=" {% static  "images/bawl_trans.png" %}"
-                                             alt="">
+                                        <img width="70px" class="" src="{% static  "images/bawl_trans.png" %}" alt="">
                                     </div>
                                     <div class="top-on">
                                         <div class="top-on1">
                                             <p>Box name: {{ box.box_name }}</p>
-                                            <span style="color: #999;">Last synced: {{ box.box_last_sync }} <br/></span>
+											<p style="color: #999;">Last synced:<br/>{{ box.box_last_sync }}<br/></p>
                                         </div>
-                                        <button type="submit" class="btn btn_5 btn-xs btn-info">Sync now
-                                        </button>
+                                        <!-- <button type="submit" class="btn btn_5 btn-xs btn-info">Sync now</button> -->
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="clearfix"></div>
