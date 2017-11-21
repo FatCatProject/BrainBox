@@ -90,10 +90,10 @@ def pushlogs(request):
 	BrainBoxDB.add_system_log(myLog=my_log)
 
 	try:
+		receive_tasks.get_foodboxes()
 		send_tasks.put_foodboxes()
 		send_tasks.put_feedinglogs()
 		receive_tasks.get_cards()
-		receive_tasks.get_foodboxes()
 	except requests.exceptions.RequestException as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
@@ -213,10 +213,10 @@ def pullfoodbox(request, box_id):
 	BrainBoxDB.add_system_log(myLog=my_log)
 
 	try:
+		receive_tasks.get_foodboxes()
 		send_tasks.put_foodboxes()
 		send_tasks.put_feedinglogs()
 		receive_tasks.get_cards()
-		receive_tasks.get_foodboxes()
 	except requests.exceptions.RequestException as e:
 		my_log = SystemLog(
 			time_stamp=time.time(),
