@@ -151,9 +151,9 @@ def sync_box(request):
 
 @login_required()
 def server_sync(request):
+	receive_tasks.get_foodboxes()
 	send_tasks.put_foodboxes()
 	send_tasks.put_feedinglogs()
 	receive_tasks.get_cards()
-	receive_tasks.get_foodboxes()
 	return HttpResponseRedirect(redirect_to="/web_ui/")
 
