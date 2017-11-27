@@ -13,6 +13,7 @@ from django.utils.html import escape, strip_tags
 from server_tasks.send import get_server_token
 import server_tasks.receive as receive_tasks
 import server_tasks.send as send_tasks
+from datetime import datetime
 
 
 @login_required(login_url='login')
@@ -26,7 +27,7 @@ def index(request):
 	if server_last_sync is None:
 		server_last_sync = "Never"
 	else:
-		server_last_sync = server_last_sync.value_text
+		server_last_sync = datetime.strptime(server_last_sync.value_text, "%Y-%m-%d %H:%M:%S")
 
 	context_dict = {
 		"account_name": user.username,
