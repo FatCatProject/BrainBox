@@ -13,15 +13,22 @@ import time
 
 
 def put_foodboxes():
-	# TODO - SSL
 	my_account = BrainBoxDB.get_account_info()  # type: Account
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	assert my_account is not None
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
 	server_address = server_address.value_text
-	my_auth = (my_account.user_name, my_account.server_token)
-	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
+	server_token_auth = {
+		"server-token-user": my_account.user_name,
+		"server-token-pw": my_account.server_token
+	}
+	print("server_token_auth: {0}".format(server_token_auth))  # TODO - Delete debug message
 	unsynced_foodboxes = BrainBoxDB.get_unsynced_foodBoxes_to_server()  # type: tuple[FoodBox]
 	if not unsynced_foodboxes:
 		now = time.time()
@@ -45,12 +52,14 @@ def put_foodboxes():
 	]
 	payload = {"foodboxes": foodboxes_to_sync}
 	print("Payload FoodBoxes: {0}".format(payload))  # TODO - Delete debug message
-	put_address = "http://{0}/api/bbox/put_foodbox/".format(server_address)
+	put_address = "https://{0}/api/bbox/put_foodbox".format(server_address)
 	print("PUT address FoodBoxes: {0}".format(put_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:
-		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
+		server_response = requests.put(
+			url=put_address, json=payload, auth=my_auth, headers=server_token_auth
+		)
 		if server_response.status_code != 200 and server_response.status_code != 204:
 			my_log = SystemLog(
 				time_stamp=now,
@@ -90,15 +99,22 @@ def put_foodboxes():
 
 
 def put_feedinglogs():
-	# TODO - SSL
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	my_account = BrainBoxDB.get_account_info()  # type: Account
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
 	assert my_account is not None
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
 	server_address = server_address.value_text
-	my_auth = (my_account.user_name, my_account.server_token)
-	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
+	server_token_auth = {
+		"server-token-user": my_account.user_name,
+		"server-token-pw": my_account.server_token
+	}
+	print("server_token_auth: {0}".format(server_token_auth))  # TODO - Delete debug message
 	unsynced_feeding_logs = BrainBoxDB.get_not_synced_feeding_logs()  # type: tuple[FeedingLog]
 	if not unsynced_feeding_logs:
 		now = time.time()
@@ -138,12 +154,14 @@ def put_feedinglogs():
 	]
 	payload = {"feeding_logs": feeding_logs_to_sync}
 	print("Payload FeedingLogs: {0}".format(payload))  # TODO - Delete debug message
-	put_address = "http://{0}/api/bbox/put_feeding_log/".format(server_address)
+	put_address = "https://{0}/api/bbox/put_feeding_log".format(server_address)
 	print("PUT address FeedingLogs: {0}".format(put_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:
-		server_response = requests.put(url=put_address, json=payload, auth=my_auth)
+		server_response = requests.put(
+			url=put_address, json=payload, auth=my_auth, headers=server_token_auth
+		)
 		if server_response.status_code != 200 and server_response.status_code != 201:
 			my_log = SystemLog(
 				time_stamp=now,
@@ -186,26 +204,35 @@ def put_feedinglogs():
 
 
 def get_server_token(user_name: str, password: str):
-	# TODO - SSL
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	brainbox_id = BrainBoxDB.get_system_setting("BrainBox_ID")  # type: SystemSetting
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
 	assert brainbox_id is not None
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
 	server_address = server_address.value_text
-	my_auth = (user_name, password)
-	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
+	server_token_auth = {
+		"server-token-user": user_name,
+		"server-token-pw": password
+	}
+	print("server_token_auth: {0}".format(server_token_auth))  # TODO - Delete debug message
 
 	payload = {"brainbox_id": brainbox_id.value_text}
 	print("Payload server_token: {0}".format(payload))  # TODO - Delete debug message
-	get_address = "http://{0}/api/bbox/get_server_token/".format(server_address)
+	get_address = "https://{0}/api/bbox/get_server_token".format(server_address)
 	print("GET address server_token: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
 	new_server_token = None
 	login_status = False
 	try:
-		server_response = requests.get(url=get_address, json=payload, auth=my_auth)
+		server_response = requests.get(
+			url=get_address, json=payload, auth=my_auth, headers=server_token_auth
+		)
 		if server_response.status_code != 200:
 			my_log = SystemLog(
 				time_stamp=now,
@@ -257,18 +284,23 @@ def get_server_token(user_name: str, password: str):
 
 
 def head_check_server_connection():
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
 	server_address = server_address.value_text
-	head_address = "http://{0}/api/bbox/head_check_server_connection/".format(
+	head_address = "https://{0}/api/bbox/head_check_server_connection".format(
 		server_address
 	)
 	print("HEAD address check_server_connection: {0}".format(head_address))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
 
 	now = time.time()
 	try:
-		server_response = requests.head(url=head_address)
+		server_response = requests.head(url=head_address, auth=my_auth, allow_redirects=True)
 
 		if server_response.status_code != 200 and server_response.status_code != 204:
 			my_log = SystemLog(

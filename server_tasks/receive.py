@@ -12,22 +12,31 @@ import time
 
 
 def get_cards():
-	# TODO - SSL
 	my_account = BrainBoxDB.get_account_info()  # type: Account
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	assert my_account is not None
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
-	my_auth = (my_account.user_name, my_account.server_token)
-	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
 
+	server_token_auth = {
+		"server-token-user": my_account.user_name,
+		"server-token-pw": my_account.server_token
+	}
+	print("server_token_auth: {0}".format(server_token_auth))  # TODO - Delete debug message
 	server_address = server_address.value_text
-	get_address = "http://{0}/api/bbox/get_card/".format(server_address)
+	get_address = "https://{0}/api/bbox/get_card".format(server_address)
 	print("GET address get_card: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:
-		server_response = requests.get(url=get_address, auth=my_auth)
+		server_response = requests.get(
+			url=get_address, auth=my_auth, headers=server_token_auth
+		)
 		cards_response = json.loads(server_response.text)
 
 		admin_cards_response = cards_response["admin_cards"]
@@ -122,19 +131,29 @@ def get_foodboxes():
 	# TODO - SSL
 	my_account = BrainBoxDB.get_account_info()  # type: Account
 	server_address = BrainBoxDB.get_system_setting("Server_Address")  # type: SystemSetting
+	server_authentication_user = BrainBoxDB.get_system_setting("Server_Authentication_User")  # type: SystemSetting
+	server_authentication_pw = BrainBoxDB.get_system_setting("Server_Authentication_PW")  # type: SystemSetting
 	assert my_account is not None
 	assert server_address is not None
+	assert server_authentication_user is not None
+	assert server_authentication_pw is not None
 
-	my_auth = (my_account.user_name, my_account.server_token)
-	print("my_auth: {0}".format(my_auth))  # TODO - Delete debug message
+	my_auth = (server_authentication_user.value_text, server_authentication_pw.value_text)
+	server_token_auth = {
+		"server-token-user": my_account.user_name,
+		"server-token-pw": my_account.server_token
+	}
+	print("server_token_auth: {0}".format(server_token_auth))  # TODO - Delete debug message
 
 	server_address = server_address.value_text
-	get_address = "http://{0}/api/bbox/get_foodbox/".format(server_address)
+	get_address = "https://{0}/api/bbox/get_foodbox".format(server_address)
 	print("GET address get_foodbox: {0}".format(get_address))  # TODO - Delete debug message
 
 	now = time.time()
 	try:
-		server_response = requests.get(url=get_address, auth=my_auth)
+		server_response = requests.get(
+			url=get_address, auth=my_auth, headers=server_token_auth
+		)
 		foodboxes_response = json.loads(server_response.text)
 
 		for foodbox in foodboxes_response['foodboxes']:
