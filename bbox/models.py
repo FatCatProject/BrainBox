@@ -129,8 +129,13 @@ class SystemLog(models.Model):
 class SystemSetting(models.Model):
 	key_name = models.TextField(
 		primary_key=True, choices=(
-			("BrainBox_ID", "BrainBox_ID"), ("BrainBox_Name", "BrainBox_Name"), ("Sync_Interval", "Sync_interval"),
-			("Server_Last_Sync", "Server_Last_Sync"), ("Server_Address", "Server_Address")
+			("BrainBox_ID", "BrainBox_ID"),
+			("BrainBox_Name", "BrainBox_Name"),
+			("Server_Address", "Server_Address"),
+			("Server_Authentication_PW", "Server_Authentication_PW"),
+			("Server_Authentication_User", "Server_Authentication_User"),
+			("Server_Last_Sync", "Server_Last_Sync"),
+			("Sync_Interval", "Sync_interval")
 		), db_column="key_name"
 	)
 	value_text = models.TextField(blank=True, null=True, db_column="value_text")
